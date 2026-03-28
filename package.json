@@ -1,0 +1,10 @@
+{
+  "name": "family-project",
+  "version": "1.0.0",
+  "description": "Johnson Family Games — a GitHub Pages site with browser games",
+  "scripts": {
+    "dev": "npx serve . -l 3000",
+    "start": "npx serve . -l 3000"
+  },
+  "private": true
+}

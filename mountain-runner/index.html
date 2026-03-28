@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Mountain Runner</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #2C2824;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    header {
+      text-align: center;
+      padding: 16px 16px 4px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      color: #e94560;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    header p {
+      color: #aaa;
+      margin-top: 2px;
+      font-size: 0.9rem;
+    }
+
+    #game-wrapper {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    canvas {
+      border: 3px solid #4A4540;
+      border-radius: 6px;
+      background: #6B6358;
+      max-width: 95vw;
+      max-height: 75vh;
+    }
+
+    /* Mobile controls */
+    #mobile-controls {
+      display: none;
+      margin-top: 10px;
+      gap: 6px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .ctrl-group {
+      display: grid;
+      gap: 4px;
+    }
+
+    .dpad {
+      grid-template-columns: 52px 52px 52px;
+      grid-template-rows: 52px 52px;
+    }
+
+    .dpad .blank { visibility: hidden; }
+
+    #mobile-controls button {
+      width: 52px;
+      height: 52px;
+      font-size: 1.4rem;
+      border: none;
+      border-radius: 10px;
+      background: #3D3830;
+      color: #eee;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    #mobile-controls button:active,
+    #mobile-controls button.pressed { background: #e94560; }
+
+    #btn-mash {
+      width: 112px;
+      font-size: 1rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    @media (pointer: coarse) {
+      #mobile-controls { display: flex; }
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 12px;
+      font-size: 0.8rem;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Mountain Runner</h1>
+  <p>&uarr; Jump &mdash; &larr;&rarr; Dodge &mdash; &darr; Run forward &mdash; Space to escape traps &mdash; Esc to pause</p>
+</header>
+
+<div id="game-wrapper">
+  <canvas id="game" width="500" height="700"></canvas>
+
+  <div id="mobile-controls">
+    <div class="ctrl-group dpad">
+      <div class="blank"></div>
+      <button id="btn-up" aria-label="Up">&#9650;</button>
+      <div class="blank"></div>
+      <button id="btn-left" aria-label="Left">&#9664;</button>
+      <button id="btn-down" aria-label="Down">&#9660;</button>
+      <button id="btn-right" aria-label="Right">&#9654;</button>
+    </div>
+    <button id="btn-mash" aria-label="Escape trap">MASH</button>
+  </div>
+</div>
+
+<footer>&copy; 2026 Johnson Family</footer>
+
+<script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Johnson Family Games</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      padding: 48px 16px 16px;
+    }
+
+    header h1 {
+      font-size: 2.6rem;
+      color: #e94560;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      color: #aaa;
+      margin-top: 6px;
+      font-size: 1.05rem;
+    }
+
+    .games {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+      max-width: 900px;
+      width: 100%;
+      padding: 40px 24px;
+    }
+
+    .game-card {
+      background: #16213e;
+      border-radius: 12px;
+      overflow: hidden;
+      text-decoration: none;
+      color: #eee;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(233, 69, 96, 0.25);
+    }
+
+    .game-card .thumb {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+
+    .game-card .info {
+      padding: 16px 20px 20px;
+    }
+
+    .game-card h2 {
+      font-size: 1.3rem;
+      color: #e94560;
+      margin-bottom: 6px;
+    }
+
+    .game-card p {
+      font-size: 0.9rem;
+      color: #aaa;
+      line-height: 1.4;
+    }
+
+    .coming-soon .thumb {
+      opacity: 0.35;
+    }
+
+    .coming-soon .info p {
+      color: #666;
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 20px;
+      font-size: 0.85rem;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Johnson Family Games</h1>
+  <p>Pick a game and play!</p>
+</header>
+
+<section class="games">
+  <a class="game-card" href="mountain-runner/">
+    <div class="thumb" style="background: linear-gradient(135deg, #3A5B8C, #6B6358);">
+      <span>&#9968;</span>
+    </div>
+    <div class="info">
+      <h2>Mountain Runner</h2>
+      <p>Dodge rocks, lightning, wind, trapdoors, tennis ball cannons, and cliff jumps as you race up the mountain!</p>
+    </div>
+  </a>
+
+  <a class="game-card" href="princess-sparkle/">
+    <div class="thumb" style="background: linear-gradient(135deg, #C850C0, #4158D0);">
+      <span>&#10024;</span>
+    </div>
+    <div class="info">
+      <h2>Princess Sparkle</h2>
+      <p>Pick a princess and press her button to fill the screen with sparkles in her dress color!</p>
+    </div>
+  </a>
+</section>
+
+<footer>&copy; 2026 Johnson Family</footer>
+
+</body>
+</html>
