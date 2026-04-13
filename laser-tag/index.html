@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Laser Tag</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #05060d;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      position: relative;
+    }
+
+    .back {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      color: #4fc3f7;
+      text-decoration: none;
+      font-size: 0.9rem;
+      z-index: 10;
+    }
+
+    .back:hover { color: #fff; }
+
+    header {
+      text-align: center;
+      padding: 16px 16px 4px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      background: linear-gradient(90deg, #00e5ff, #ff1744);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    header p {
+      color: #8aa;
+      margin-top: 2px;
+      font-size: 0.88rem;
+    }
+
+    #game-wrapper {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    canvas {
+      border: 3px solid #1b3a5a;
+      border-radius: 6px;
+      background: #000;
+      max-width: 95vw;
+      max-height: 72vh;
+      box-shadow: 0 0 30px rgba(0, 229, 255, 0.25);
+      cursor: crosshair;
+    }
+
+    #mobile-controls {
+      display: none;
+      margin-top: 12px;
+      gap: 24px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .dpad {
+      display: grid;
+      gap: 4px;
+      grid-template-columns: 52px 52px 52px;
+      grid-template-rows: 52px 52px;
+    }
+
+    .dpad .blank { visibility: hidden; }
+
+    #mobile-controls button {
+      width: 52px;
+      height: 52px;
+      font-size: 1.3rem;
+      border: none;
+      border-radius: 10px;
+      background: rgba(27, 58, 90, 0.8);
+      color: #eee;
+      cursor: pointer;
+      touch-action: manipulation;
+      font-weight: bold;
+    }
+
+    #mobile-controls button:active,
+    #mobile-controls button.pressed {
+      background: #ff1744;
+    }
+
+    #btn-fire {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      font-size: 1rem;
+      background: radial-gradient(circle, #ff1744, #880e2a);
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    @media (pointer: coarse) {
+      #mobile-controls { display: flex; }
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 12px;
+      font-size: 0.8rem;
+      color: #334;
+    }
+  </style>
+</head>
+<body>
+
+<a class="back" href="../">&larr; Home</a>
+
+<header>
+  <h1>Laser Tag</h1>
+  <p>WASD move &mdash; Mouse or &larr;&rarr; look &mdash; Space/click fire &mdash; Stand on your base to heal</p>
+</header>
+
+<div id="game-wrapper">
+  <canvas id="game" width="800" height="520"></canvas>
+
+  <div id="mobile-controls">
+    <div class="dpad">
+      <div class="blank"></div>
+      <button id="btn-up" aria-label="Forward">&#9650;</button>
+      <div class="blank"></div>
+      <button id="btn-left" aria-label="Turn left">&#9664;</button>
+      <button id="btn-down" aria-label="Back">&#9660;</button>
+      <button id="btn-right" aria-label="Turn right">&#9654;</button>
+    </div>
+    <button id="btn-fire" aria-label="Fire">FIRE</button>
+  </div>
+</div>
+
+<footer>&copy; 2026 Johnson Family</footer>
+
+<script src="game.js"></script>
+</body>
+</html>
