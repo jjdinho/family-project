@@ -18,7 +18,7 @@
     '#.....####.....#',
     '#..............#',
     '#..##......##..#',
-    '#......2.......#',
+    '#2............4#',
     '################'
   ];
   const MAP_W = 16, MAP_H = 16;
@@ -33,7 +33,7 @@
   for (let y = 0; y < MAP_H; y++) {
     for (let x = 0; x < MAP_W; x++) {
       const c = MAP[y][x];
-      if (c === '1' || c === '2' || c === '3') bases[c] = { x: x + 0.5, y: y + 0.5 };
+      if (c === '1' || c === '2' || c === '3' || c === '4') bases[c] = { x: x + 0.5, y: y + 0.5 };
     }
   }
 
@@ -48,8 +48,8 @@
   const HIT_RADIUS = 0.38;
   const MATCH_DURATION = 120_000;
 
-  const colors = { 1: '#4fc3f7', 2: '#ef5350', 3: '#ffee58' };
-  const names  = { 1: 'You',     2: 'Red Bot', 3: 'Yellow Bot' };
+  const colors = { 1: '#4fc3f7', 2: '#ef5350', 3: '#ffee58', 4: '#66bb6a' };
+  const names  = { 1: 'Cyan',    2: 'Red',     3: 'Yellow',   4: 'Green' };
 
   const makePlayer = (id, angle, isAI) => ({
     id, x: bases[id].x, y: bases[id].y, angle,
@@ -58,10 +58,33 @@
     color: colors[id], aiWanderAngle: 0, aiThinkTimer: 0, aiStrafe: 1
   });
 
-  const player = makePlayer(1, Math.PI / 4, false);
-  const bot2 = makePlayer(2, -Math.PI / 2, true);
-  const bot3 = makePlayer(3, Math.PI, true);
-  const players = [player, bot2, bot3];
+  const players = [
+    makePlayer(1, Math.PI / 4, true),
+    makePlayer(2, -Math.PI / 2, true),
+    makePlayer(3, Math.PI, true),
+    makePlayer(4, Math.PI / 2, true)
+  ];
+
+  // Multiplayer mode is set via the HTML menu before the match starts.
+  // 'single' = 1 human + 3 bots; 'host' = slot 1 human (local) + slot 2 human (remote joiner) + slots 3,4 bots;
+  // 'client' = local browser controls slot 2, host simulates everything and sends snapshots.
+  let mode = 'single';
+  let localSlot = 1;
+  let player = players[0];
+
+  const emptyInput = () => ({ w:0, a:0, s:0, d:0, u:0, dn:0, l:0, r:0, mdx:0, fire:0 });
+  const inputs = { 1: emptyInput(), 2: emptyInput(), 3: emptyInput(), 4: emptyInput() };
+
+  const configureMode = (m, slot) => {
+    mode = m;
+    localSlot = slot;
+    player = players[slot - 1];
+    for (const p of players) p.isAI = true;
+    players[0].isAI = false;
+    if (m !== 'single') players[1].isAI = false;
+  };
+
+  let matchTimeLeft = MATCH_DURATION;
 
   const keys = {};
   const input = { mouseDX: 0, fire: false };
@@ -79,8 +102,14 @@
   addEventListener('keyup', e => { keys[e.code] = false; });
 
   canvas.addEventListener('click', () => {
-    if (gameState === 'menu') { gameState = 'playing'; startTime = performance.now(); canvas.requestPointerLock?.(); return; }
-    if (gameState === 'gameover') { resetGame(); canvas.requestPointerLock?.(); return; }
+    if (gameState === 'menu' && mode !== 'client') {
+      gameState = 'playing';
+      startTime = performance.now();
+      matchTimeLeft = MATCH_DURATION;
+      canvas.requestPointerLock?.();
+      return;
+    }
+    if (gameState === 'gameover' && mode !== 'client') { resetGame(); canvas.requestPointerLock?.(); return; }
     if (gameState === 'playing') { canvas.requestPointerLock?.(); input.fire = true; }
   });
 
@@ -152,7 +181,7 @@
       x1: ox, y1: oy,
       x2: ox + fx * closestDist, y2: oy + fy * closestDist,
       color: shooter.color, life: 0.4, maxLife: 0.4,
-      fromPlayer: shooter === player
+      fromSlot: shooter.id
     });
     if (target) tagHit(shooter, target);
   };
@@ -172,7 +201,7 @@
       target.respawnTimer = 2.2;
       shooter.score += 1;
       shooter.tagFlash = 0.9;
-      if (shooter === player) player.hitMarker = 0.6;
+      shooter.hitMarker = 0.6;
     }
   };
 
@@ -189,23 +218,39 @@
     return Math.hypot(p.x - b.x, p.y - b.y) < 1.3;
   };
 
-  const updatePlayer = dt => {
-    if (player.respawnTimer > 0) return;
+  const applyInput = (p, inp, dt) => {
+    if (p.respawnTimer > 0) { inp.fire = 0; inp.mdx = 0; return; }
     const speed = 2.9 * dt;
     const turn = 2.4 * dt;
-    const fx = Math.cos(player.angle), fy = Math.sin(player.angle);
+    const fx = Math.cos(p.angle), fy = Math.sin(p.angle);
     const rx = -fy, ry = fx;
     let mx = 0, my = 0;
-    if (keys['KeyW'] || keys['ArrowUp'])   { mx += fx * speed; my += fy * speed; }
-    if (keys['KeyS'] || keys['ArrowDown']) { mx -= fx * speed; my -= fy * speed; }
-    if (keys['KeyA']) { mx -= rx * speed; my -= ry * speed; }
-    if (keys['KeyD']) { mx += rx * speed; my += ry * speed; }
-    if (keys['ArrowLeft'])  player.angle -= turn;
-    if (keys['ArrowRight']) player.angle += turn;
-    player.angle += input.mouseDX * 0.003;
+    if (inp.w || inp.u)  { mx += fx * speed; my += fy * speed; }
+    if (inp.s || inp.dn) { mx -= fx * speed; my -= fy * speed; }
+    if (inp.a) { mx -= rx * speed; my -= ry * speed; }
+    if (inp.d) { mx += rx * speed; my += ry * speed; }
+    if (inp.l) p.angle -= turn;
+    if (inp.r) p.angle += turn;
+    p.angle += (inp.mdx || 0) * 0.003;
+    inp.mdx = 0;
+    tryMove(p, mx, my);
+    if (inp.fire) fireLaser(p);
+    inp.fire = 0;
+  };
+
+  const pushLocalInput = () => {
+    const inp = inputs[localSlot];
+    inp.w = keys['KeyW'] ? 1 : 0;
+    inp.a = keys['KeyA'] ? 1 : 0;
+    inp.s = keys['KeyS'] ? 1 : 0;
+    inp.d = keys['KeyD'] ? 1 : 0;
+    inp.u = keys['ArrowUp'] ? 1 : 0;
+    inp.dn = keys['ArrowDown'] ? 1 : 0;
+    inp.l = keys['ArrowLeft'] ? 1 : 0;
+    inp.r = keys['ArrowRight'] ? 1 : 0;
+    inp.mdx = (inp.mdx || 0) + input.mouseDX;
     input.mouseDX = 0;
-    tryMove(player, mx, my);
-    if (input.fire || keys['Space']) fireLaser(player);
+    if (input.fire || keys['Space']) inp.fire = 1;
     input.fire = false;
   };
 
@@ -296,9 +341,10 @@
       beams[i].life -= dt;
       if (beams[i].life <= 0) beams.splice(i, 1);
     }
-    updatePlayer(dt);
-    updateAI(bot2, dt);
-    updateAI(bot3, dt);
+    for (const p of players) {
+      if (p.isAI) updateAI(p, dt);
+      else applyInput(p, inputs[p.id], dt);
+    }
   };
 
   // --- Rendering ---
@@ -479,7 +525,7 @@
       list.push({ kind: 'bot', x: e.x, y: e.y, data: e });
     }
     for (const s of shields) if (s.active) list.push({ kind: 'shield', x: s.x, y: s.y });
-    for (const id of [1, 2, 3]) {
+    for (const id of [1, 2, 3, 4]) {
       const b = bases[id];
       list.push({ kind: 'base', x: b.x, y: b.y, color: colors[id] });
     }
@@ -505,7 +551,7 @@
   const renderBeams = () => {
     for (const b of beams) {
       const alpha = b.life / b.maxLife;
-      if (b.fromPlayer) {
+      if (b.fromSlot === localSlot) {
         // 2D screen-space laser: gun barrel tip → past crosshair
         const barrelX = W / 2;
         const barrelY = H - 172;        // just above the gun tip
@@ -605,17 +651,18 @@
       ctx.fillStyle = `rgba(255,30,30,${player.hitFlash * 0.45})`;
       ctx.fillRect(0, 0, W, H);
     }
-    ctx.fillStyle = 'rgba(0,0,0,0.55)';
-    ctx.fillRect(10, 10, 180, 82);
     ctx.font = 'bold 13px sans-serif';
     ctx.textAlign = 'left'; ctx.textBaseline = 'top';
     const sorted = [...players].sort((a, b) => b.score - a.score);
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(10, 10, 180, 22 + sorted.length * 16);
     ctx.fillStyle = '#ccc';
     ctx.fillText('SCORE', 20, 16);
     for (let i = 0; i < sorted.length; i++) {
       const p = sorted[i];
       ctx.fillStyle = p.color;
-      ctx.fillText(`${names[p.id]}`, 20, 34 + i * 16);
+      const label = p.id === localSlot ? 'You' : (p.isAI ? names[p.id] + ' Bot' : names[p.id]);
+      ctx.fillText(label, 20, 34 + i * 16);
       ctx.fillStyle = '#fff';
       ctx.textAlign = 'right';
       ctx.fillText(`${p.score}`, 180, 34 + i * 16);
@@ -638,7 +685,7 @@
     ctx.fillStyle = '#fff';
     ctx.fillText('SHIELD ' + Math.ceil(player.shield), 26, H - 32);
 
-    const remain = Math.max(0, MATCH_DURATION - (performance.now() - startTime));
+    const remain = matchTimeLeft;
     const mm = Math.floor(remain / 60000);
     const ss = Math.floor((remain % 60000) / 1000);
     ctx.fillStyle = 'rgba(0,0,0,0.55)';
@@ -704,7 +751,7 @@
       for (let x = 0; x < MAP_W; x++) {
         const c = MAP[y][x];
         if (c === '#') { ctx.fillStyle = '#334'; ctx.fillRect(ox + x * s, oy + y * s, s, s); }
-        else if (c === '1' || c === '2' || c === '3') {
+        else if (c === '1' || c === '2' || c === '3' || c === '4') {
           ctx.fillStyle = colors[c] + '55';
           ctx.fillRect(ox + x * s, oy + y * s, s, s);
         }
@@ -747,7 +794,8 @@
     ctx.fillText('Most tags in 2 minutes wins', W / 2, H / 2 + 14);
     ctx.fillStyle = '#ffee58';
     ctx.font = 'bold 22px sans-serif';
-    ctx.fillText('▶ CLICK TO START', W / 2, H / 2 + 70);
+    const prompt = mode === 'client' ? 'Waiting for host to start...' : '▶ CLICK TO START';
+    ctx.fillText(prompt, W / 2, H / 2 + 70);
   };
 
   const drawGameOver = () => {
@@ -762,16 +810,19 @@
     ctx.fillText('MATCH OVER', W / 2, 100);
     ctx.fillStyle = tied ? '#fff' : winner.color;
     ctx.font = 'bold 28px sans-serif';
-    ctx.fillText(tied ? 'IT\u0027S A TIE' : `${names[winner.id].toUpperCase()} WINS!`, W / 2, 150);
+    const winnerLabel = winner.id === localSlot ? 'YOU WIN!' : `${names[winner.id].toUpperCase()} WINS!`;
+    ctx.fillText(tied ? 'IT\u0027S A TIE' : winnerLabel, W / 2, 150);
     ctx.font = '20px sans-serif';
     for (let i = 0; i < sorted.length; i++) {
       const p = sorted[i];
       ctx.fillStyle = p.color;
-      ctx.fillText(`${names[p.id]}  —  ${p.score} tag${p.score === 1 ? '' : 's'}`, W / 2, 210 + i * 32);
+      const label = p.id === localSlot ? 'You' : (p.isAI ? names[p.id] + ' Bot' : names[p.id]);
+      ctx.fillText(`${label}  —  ${p.score} tag${p.score === 1 ? '' : 's'}`, W / 2, 210 + i * 32);
     }
     ctx.fillStyle = '#ffee58';
     ctx.font = 'bold 20px sans-serif';
-    ctx.fillText('▶ CLICK TO PLAY AGAIN', W / 2, H - 60);
+    const again = mode === 'client' ? 'Waiting for host to restart...' : '▶ CLICK TO PLAY AGAIN';
+    ctx.fillText(again, W / 2, H - 60);
   };
 
   const drawPaused = () => {
@@ -786,6 +837,7 @@
   };
 
   const resetGame = () => {
+    if (mode === 'client') return;
     for (const p of players) {
       p.score = 0; p.health = 100; p.shield = 0; p.respawnTimer = 0;
       p.fireCooldown = 0; p.hitFlash = 0; p.tagFlash = 0;
@@ -796,6 +848,7 @@
     beams.length = 0;
     gameState = 'playing';
     startTime = performance.now();
+    matchTimeLeft = MATCH_DURATION;
     paused = false;
   };
 
@@ -817,18 +870,224 @@
   bindBtn('btn-left',  () => keys['ArrowLeft'] = true,  () => keys['ArrowLeft'] = false);
   bindBtn('btn-right', () => keys['ArrowRight'] = true, () => keys['ArrowRight'] = false);
   bindBtn('btn-fire',  () => {
-    if (gameState === 'menu') { gameState = 'playing'; startTime = performance.now(); return; }
-    if (gameState === 'gameover') { resetGame(); return; }
+    if (gameState === 'menu' && mode !== 'client') {
+      gameState = 'playing'; startTime = performance.now(); matchTimeLeft = MATCH_DURATION; return;
+    }
+    if (gameState === 'gameover' && mode !== 'client') { resetGame(); return; }
     input.fire = true;
   });
+
+  // --- Networking (PeerJS host-authoritative) ---
+
+  let netConn = null;      // host: single connection to joiner; client: connection to host
+  let netLastSend = 0;
+  const NET_TICK = 1 / 30;
+
+  const sendSafe = msg => {
+    if (netConn && netConn.open) {
+      try { netConn.send(msg); } catch (e) { /* swallow */ }
+    }
+  };
+
+  const makeSnapshot = () => ({
+    t: 'snap',
+    s: gameState,
+    pz: paused,
+    tl: matchTimeLeft,
+    p: players.map(p => ({
+      x: +p.x.toFixed(3), y: +p.y.toFixed(3), a: +p.angle.toFixed(3),
+      h: Math.round(p.health), sh: Math.round(p.shield), sc: p.score,
+      r: +p.respawnTimer.toFixed(2),
+      hf: +p.hitFlash.toFixed(2), tf: +p.tagFlash.toFixed(2), hm: +p.hitMarker.toFixed(2)
+    })),
+    sl: shields.map(s => s.active ? 1 : 0),
+    b: beams.map(b => ({
+      x1: +b.x1.toFixed(2), y1: +b.y1.toFixed(2),
+      x2: +b.x2.toFixed(2), y2: +b.y2.toFixed(2),
+      c: b.color, l: +b.life.toFixed(2), ml: b.maxLife, fs: b.fromSlot
+    }))
+  });
+
+  const applySnapshot = snap => {
+    gameState = snap.s;
+    paused = !!snap.pz;
+    matchTimeLeft = snap.tl;
+    for (let i = 0; i < snap.p.length; i++) {
+      const src = snap.p[i], p = players[i];
+      p.x = src.x; p.y = src.y; p.angle = src.a;
+      p.health = src.h; p.shield = src.sh; p.score = src.sc;
+      p.respawnTimer = src.r;
+      p.hitFlash = src.hf; p.tagFlash = src.tf; p.hitMarker = src.hm;
+    }
+    for (let i = 0; i < shields.length; i++) shields[i].active = !!snap.sl[i];
+    beams.length = 0;
+    for (const b of snap.b) beams.push({
+      x1: b.x1, y1: b.y1, x2: b.x2, y2: b.y2,
+      color: b.c, life: b.l, maxLife: b.ml, fromSlot: b.fs
+    });
+  };
+
+  const handleRemoteInput = inp => {
+    // Host merges client's input into slot 2's input buffer.
+    const dst = inputs[2];
+    dst.w = inp.w|0; dst.a = inp.a|0; dst.s = inp.s|0; dst.d = inp.d|0;
+    dst.u = inp.u|0; dst.dn = inp.dn|0; dst.l = inp.l|0; dst.r = inp.r|0;
+    dst.mdx = (dst.mdx || 0) + (inp.mdx || 0);
+    if (inp.fire) dst.fire = 1;
+  };
+
+  const makeInputMsg = () => {
+    const inp = inputs[localSlot];
+    const msg = {
+      t: 'inp',
+      w: inp.w, a: inp.a, s: inp.s, d: inp.d,
+      u: inp.u, dn: inp.dn, l: inp.l, r: inp.r,
+      mdx: inp.mdx || 0, fire: inp.fire | 0
+    };
+    inp.mdx = 0;
+    inp.fire = 0;
+    return msg;
+  };
+
+  const setStatus = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+  const showPanel = id => {
+    document.querySelectorAll('#lt-menu .panel').forEach(el => el.classList.add('hidden'));
+    const el = document.getElementById(id); if (el) el.classList.remove('hidden');
+  };
+  const hideMenu = () => { const el = document.getElementById('lt-menu'); if (el) el.classList.add('hidden'); };
+  const showMenu = () => { const el = document.getElementById('lt-menu'); if (el) el.classList.remove('hidden'); };
+
+  const startSinglePlayer = () => {
+    configureMode('single', 1);
+    hideMenu();
+    gameState = 'menu';
+  };
+
+  const PEER_PREFIX = 'jjdinho-lasertag-';
+  const randomCode = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let s = '';
+    for (let i = 0; i < 5; i++) s += chars[Math.floor(Math.random() * chars.length)];
+    return s;
+  };
+
+  const startHost = () => {
+    if (typeof Peer === 'undefined') { setStatus('host-status', 'PeerJS failed to load.'); return; }
+    configureMode('host', 1);
+    showPanel('menu-host');
+    setStatus('host-status', 'Setting up room...');
+    const code = randomCode();
+    const peer = new Peer(PEER_PREFIX + code);
+    peer.on('open', () => {
+      const codeEl = document.getElementById('room-code');
+      if (codeEl) codeEl.textContent = code;
+      setStatus('host-status', 'Waiting for friend to join...');
+    });
+    peer.on('connection', conn => {
+      netConn = conn;
+      conn.on('open', () => {
+        setStatus('host-status', 'Friend connected! Start when ready.');
+        const btn = document.getElementById('btn-host-start');
+        if (btn) btn.disabled = false;
+      });
+      conn.on('data', data => {
+        if (data && data.t === 'inp') handleRemoteInput(data);
+      });
+      conn.on('close', () => {
+        netConn = null;
+        players[1].isAI = true;
+        setStatus('host-status', 'Friend disconnected. Bot takes over slot 2.');
+      });
+    });
+    peer.on('error', err => {
+      setStatus('host-status', 'Error: ' + (err.type || err.message));
+    });
+    const startBtn = document.getElementById('btn-host-start');
+    if (startBtn) startBtn.onclick = () => {
+      if (!netConn || !netConn.open) return;
+      hideMenu();
+      gameState = 'menu';
+    };
+    const cancelBtn = document.getElementById('btn-host-cancel');
+    if (cancelBtn) cancelBtn.onclick = () => { try { peer.destroy(); } catch (_) {} showPanel('menu-main'); };
+  };
+
+  const startClient = () => {
+    if (typeof Peer === 'undefined') { setStatus('join-status', 'PeerJS failed to load.'); return; }
+    showPanel('menu-join');
+    const goBtn = document.getElementById('btn-join-go');
+    const codeInput = document.getElementById('join-code');
+    const cancelBtn = document.getElementById('btn-join-cancel');
+    let peer = null;
+    const doJoin = () => {
+      const code = (codeInput?.value || '').trim().toUpperCase();
+      if (code.length < 4) { setStatus('join-status', 'Enter a room code.'); return; }
+      configureMode('client', 2);
+      setStatus('join-status', 'Connecting...');
+      peer = new Peer();
+      peer.on('open', () => {
+        setStatus('join-status', 'Dialing host...');
+        const conn = peer.connect(PEER_PREFIX + code, { reliable: true });
+        netConn = conn;
+        conn.on('open', () => {
+          setStatus('join-status', 'Connected! Waiting for host to start.');
+          hideMenu();
+        });
+        conn.on('data', data => {
+          if (data && data.t === 'snap') applySnapshot(data);
+        });
+        conn.on('close', () => {
+          netConn = null;
+          setStatus('join-status', 'Disconnected.');
+          showMenu(); showPanel('menu-main');
+        });
+        conn.on('error', err => setStatus('join-status', 'Error: ' + (err.type || err.message)));
+      });
+      peer.on('error', err => setStatus('join-status', 'Error: ' + (err.type || err.message)));
+    };
+    if (goBtn) goBtn.onclick = doJoin;
+    if (codeInput) codeInput.onkeydown = e => { if (e.key === 'Enter') doJoin(); };
+    if (cancelBtn) cancelBtn.onclick = () => { try { peer?.destroy(); } catch (_) {} showPanel('menu-main'); };
+  };
+
+  // Wire up main menu buttons
+  document.getElementById('btn-single')?.addEventListener('click', startSinglePlayer);
+  document.getElementById('btn-host')?.addEventListener('click', startHost);
+  document.getElementById('btn-join')?.addEventListener('click', startClient);
 
   const loop = t => {
     const dt = Math.min(0.05, (t - lastT) / 1000);
     lastT = t;
-    if (gameState === 'playing' && !paused) {
-      updateState(dt);
-      if (t - startTime >= MATCH_DURATION) gameState = 'gameover';
+
+    pushLocalInput();
+
+    // Avoid stale mouseDX / fire bleeding across menu, paused, or gameover frames.
+    if (gameState !== 'playing' || paused) {
+      inputs[localSlot].fire = 0;
+      inputs[localSlot].mdx = 0;
     }
+
+    if (mode === 'client') {
+      // Client never simulates; it just sends input and renders snapshots.
+      if (gameState === 'playing' && (t - netLastSend) / 1000 >= NET_TICK) {
+        sendSafe(makeInputMsg());
+        netLastSend = t;
+      }
+    } else {
+      if (gameState === 'playing' && !paused) {
+        updateState(dt);
+        matchTimeLeft = Math.max(0, MATCH_DURATION - (t - startTime));
+        if (matchTimeLeft <= 0) gameState = 'gameover';
+      }
+      if (mode === 'host' && (t - netLastSend) / 1000 >= NET_TICK) {
+        sendSafe(makeSnapshot());
+        netLastSend = t;
+      }
+    }
+
     renderWalls();
     renderSprites();
     renderBeams();
