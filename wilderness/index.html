@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wilderness</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f1d14;
+      color: #eee;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .back {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      color: #8ed081;
+      text-decoration: none;
+      font-size: 0.9rem;
+      z-index: 10;
+    }
+    .back:hover { color: #fff; }
+
+    header {
+      text-align: center;
+      padding: 24px 16px 8px;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      color: #8ed081;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    header p {
+      color: #8aa89a;
+      margin-top: 4px;
+      font-size: 0.9rem;
+    }
+
+    #game {
+      width: 100%;
+      max-width: 760px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .status {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      background: #1a2e23;
+      border: 1px solid #2b4635;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .status .cell { font-size: 0.85rem; color: #b8ccbd; }
+    .status .cell b { color: #ffd166; font-size: 1.1rem; display: block; margin-top: 2px; }
+    .hpbar {
+      margin-top: 4px;
+      height: 8px;
+      background: #2b4635;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .hpbar > div {
+      height: 100%;
+      background: linear-gradient(90deg, #ef476f, #ffd166 50%, #06d6a0);
+      transition: width 0.3s;
+    }
+
+    .inventory {
+      background: #16261d;
+      border: 1px solid #2b4635;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      font-size: 0.9rem;
+    }
+    .inventory .item { color: #b8ccbd; }
+    .inventory .item b { color: #fff; }
+    .inventory .tool { color: #8ed081; }
+    .inventory .tool.off { color: #566; text-decoration: line-through; }
+
+    .scene {
+      background: #16261d;
+      border: 1px solid #2b4635;
+      border-radius: 12px;
+      padding: 18px;
+      min-height: 280px;
+    }
+
+    .scene h2 {
+      font-size: 1.4rem;
+      color: #8ed081;
+      margin-bottom: 6px;
+    }
+    .scene .flavor {
+      color: #8aa89a;
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .actions button, .map button {
+      background: #244534;
+      color: #eee;
+      border: 1px solid #3d6e51;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: background 0.15s, transform 0.05s;
+    }
+    .actions button:hover:not(:disabled),
+    .map button:hover {
+      background: #2f5a42;
+    }
+    .actions button:active:not(:disabled) { transform: translateY(1px); }
+    .actions button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .actions button .cost {
+      display: block;
+      font-size: 0.75rem;
+      color: #b8ccbd;
+      margin-top: 3px;
+    }
+    .actions button.primary {
+      background: #3d6e51;
+      border-color: #5a9a75;
+    }
+    .actions button.primary:hover:not(:disabled) { background: #4c8763; }
+
+    .map {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .map button {
+      padding: 0;
+      height: 120px;
+      font-size: 1.1rem;
+      text-align: center;
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+    .map button .emoji {
+      font-size: 2.6rem;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .map .m-village { background: linear-gradient(135deg, #6b4f2a, #a87b3d); border-color: #c89a5a; }
+    .map .m-prairie { background: linear-gradient(135deg, #8a8033, #c9bd4e); border-color: #e0d66e; }
+    .map .m-forest  { background: linear-gradient(135deg, #1d4a2b, #3d7e4c); border-color: #5aa06e; }
+    .map .m-lake    { background: linear-gradient(135deg, #1f4f6e, #3a88b6); border-color: #5ab3d6; }
+
+    .log {
+      background: #0b1610;
+      border: 1px solid #2b4635;
+      border-radius: 10px;
+      padding: 10px 14px;
+      max-height: 140px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+      color: #b8ccbd;
+      line-height: 1.5;
+    }
+    .log .entry { margin-bottom: 2px; }
+    .log .good  { color: #8ed081; }
+    .log .bad   { color: #ef476f; }
+    .log .gold  { color: #ffd166; }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .overlay .box {
+      background: #1a2e23;
+      border: 2px solid #8ed081;
+      border-radius: 14px;
+      padding: 28px 32px;
+      text-align: center;
+      max-width: 420px;
+    }
+    .overlay h2 { color: #8ed081; margin-bottom: 8px; font-size: 1.6rem; }
+    .overlay.bad h2 { color: #ef476f; }
+    .overlay.bad .box { border-color: #ef476f; }
+    .overlay p { color: #b8ccbd; margin-bottom: 16px; line-height: 1.5; }
+    .overlay button {
+      background: #3d6e51;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 22px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .overlay button:hover { background: #4c8763; }
+
+    .encounter {
+      background: #3a1a1a;
+      border: 2px solid #ef476f;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .encounter h3 { color: #ef476f; margin-bottom: 6px; }
+    .encounter p { color: #f4c1c9; font-size: 0.9rem; margin-bottom: 10px; }
+
+    footer {
+      margin-top: auto;
+      padding: 18px;
+      color: #445;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+<a class="back" href="../">&larr; All games</a>
+
+<header>
+  <h1>Wilderness</h1>
+  <p>Gather. Craft. Survive. Sell for gold.</p>
+</header>
+
+<div id="game">
+
+  <div class="status">
+    <div class="cell">Health<b id="s-hp">100</b>
+      <div class="hpbar"><div id="s-hpbar" style="width:100%"></div></div>
+    </div>
+    <div class="cell">Gold<b id="s-gold">0</b></div>
+    <div class="cell" style="text-align:right">
+      Goal<b>500 gold</b>
+      <button id="reset-btn" style="margin-top:6px;background:#2b4635;color:#b8ccbd;border:1px solid #3d6e51;border-radius:6px;padding:4px 10px;font-size:0.75rem;cursor:pointer;font-family:inherit">Reset game</button>
+    </div>
+  </div>
+
+  <div class="inventory" id="inv"></div>
+
+  <div class="scene" id="scene"></div>
+
+  <div class="log" id="log"></div>
+
+</div>
+
+<footer>&copy; 2026 Johnson Family</footer>
+
+<script>
+  // ---------- game state ----------
+  const SAVE_KEY = 'wilderness_save_v1';
+  const initial = () => ({
+    hp: 100,
+    maxHp: 100,
+    gold: 0,
+    wood: 0,
+    stone: 0,
+    berries: 0,
+    fish: 0,
+    pelts: 0,
+    hasAxe: false,
+    hasSpear: false,
+    hasRod: false,
+    location: 'map',
+    encounter: null, // {type, hp}
+    over: false,
+  });
+  const state = initial();
+
+  // ---------- recipes & prices ----------
+  const CRAFTS = [
+    { id: 'axe',   name: 'Axe',           need: { wood: 3, stone: 2 }, flag: 'hasAxe',   desc: 'Chop wood faster' },
+    { id: 'spear', name: 'Spear',         need: { wood: 2, stone: 1 }, flag: 'hasSpear', desc: 'Fight wild animals' },
+    { id: 'rod',   name: 'Fishing Rod',   need: { wood: 3 },           flag: 'hasRod',   desc: 'Catch fish at the lake' },
+    { id: 'stool', name: 'Wooden Stool',  need: { wood: 2 },           gives: { goods_stool: 1 },  desc: 'Sells for 10 gold' },
+    { id: 'chair', name: 'Wooden Chair',  need: { wood: 4 },           gives: { goods_chair: 1 },  desc: 'Sells for 25 gold' },
+    { id: 'table', name: 'Wooden Table',  need: { wood: 6 },           gives: { goods_table: 1 },  desc: 'Sells for 45 gold' },
+    { id: 'bed',   name: 'Wooden Bed',    need: { wood: 10, berries: 2 }, gives: { goods_bed: 1 }, desc: 'Sells for 90 gold' },
+  ];
+
+  // sell prices (also inventory counters for goods_*)
+  const SELL = {
+    wood:    { name: 'Wood',    price: 2 },
+    stone:   { name: 'Stone',   price: 3 },
+    berries: { name: 'Berries', price: 2 },
+    fish:    { name: 'Fish',    price: 6 },
+    pelts:   { name: 'Wolf Pelt', price: 15 },
+    goods_stool: { name: 'Stool', price: 10 },
+    goods_chair: { name: 'Chair', price: 25 },
+    goods_table: { name: 'Table', price: 45 },
+    goods_bed:   { name: 'Bed',   price: 90 },
+  };
+
+  // ensure goods counters exist
+  Object.keys(SELL).filter(k => k.startsWith('goods_')).forEach(k => state[k] = 0);
+
+  // ---------- logging ----------
+  const logEl = document.getElementById('log');
+  function log(msg, cls) {
+    const e = document.createElement('div');
+    e.className = 'entry' + (cls ? ' ' + cls : '');
+    e.textContent = msg;
+    logEl.prepend(e);
+    while (logEl.childElementCount > 40) logEl.removeChild(logEl.lastChild);
+  }
+
+  // ---------- helpers ----------
+  function canAfford(need) {
+    return Object.keys(need).every(k => state[k] >= need[k]);
+  }
+  function pay(need) {
+    Object.keys(need).forEach(k => state[k] -= need[k]);
+  }
+  function costText(need) {
+    return Object.keys(need).map(k => need[k] + ' ' + (SELL[k]?.name || k).toLowerCase()).join(', ');
+  }
+
+  // ---------- save / load ----------
+  function save() {
+    if (state.over) { try { localStorage.removeItem(SAVE_KEY); } catch(e){} return; }
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch(e){}
+  }
+  function load() {
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return false;
+      const data = JSON.parse(raw);
+      Object.keys(data).forEach(k => { state[k] = data[k]; });
+      return true;
+    } catch(e) { return false; }
+  }
+  function wipe() {
+    try { localStorage.removeItem(SAVE_KEY); } catch(e){}
+  }
+
+  // ---------- render ----------
+  function render() {
+    renderStatus();
+    renderInventory();
+    renderScene();
+    save();
+  }
+
+  function renderStatus() {
+    document.getElementById('s-hp').textContent = state.hp;
+    document.getElementById('s-gold').textContent = state.gold;
+    document.getElementById('s-hpbar').style.width = Math.max(0, state.hp) + '%';
+  }
+
+  function renderInventory() {
+    const inv = document.getElementById('inv');
+    const items = [
+      ['Wood',    state.wood],
+      ['Stone',   state.stone],
+      ['Berries', state.berries],
+      ['Fish',    state.fish],
+      ['Pelts',   state.pelts],
+      ['Stools',  state.goods_stool],
+      ['Chairs',  state.goods_chair],
+      ['Tables',  state.goods_table],
+      ['Beds',    state.goods_bed],
+    ];
+    let html = items.map(([n, v]) => `<span class="item">${n}: <b>${v}</b></span>`).join('');
+    html += `<span class="tool ${state.hasAxe ? '' : 'off'}">🪓 Axe</span>`;
+    html += `<span class="tool ${state.hasSpear ? '' : 'off'}">🔱 Spear</span>`;
+    html += `<span class="tool ${state.hasRod ? '' : 'off'}">🎣 Rod</span>`;
+    inv.innerHTML = html;
+  }
+
+  function renderScene() {
+    const s = document.getElementById('scene');
+    if (state.location === 'map') return renderMap(s);
+    if (state.encounter) return renderEncounter(s);
+    if (state.location === 'village') return renderVillage(s);
+    if (state.location === 'prairie') return renderPrairie(s);
+    if (state.location === 'forest')  return renderForest(s);
+    if (state.location === 'lake')    return renderLake(s);
+  }
+
+  // ---------- map ----------
+  function renderMap(s) {
+    s.innerHTML = `
+      <h2>Where to?</h2>
+      <p class="flavor">Pick a habitat. You can travel freely between them.</p>
+      <div class="map">
+        <button class="m-village" data-go="village"><span class="emoji">🏘️</span>Village</button>
+        <button class="m-prairie" data-go="prairie"><span class="emoji">🌾</span>Prairie</button>
+        <button class="m-forest"  data-go="forest"><span class="emoji">🌲</span>Forest</button>
+        <button class="m-lake"    data-go="lake"><span class="emoji">🏞️</span>Lake</button>
+      </div>
+    `;
+    s.querySelectorAll('button').forEach(b => {
+      b.onclick = () => { state.location = b.dataset.go; render(); };
+    });
+  }
+
+  function backBtn() {
+    return `<button data-back="1" class="primary">&larr; Back to map</button>`;
+  }
+  function wireBack(s) {
+    const b = s.querySelector('[data-back]');
+    if (b) b.onclick = () => { state.location = 'map'; render(); };
+  }
+
+  // ---------- village ----------
+  function renderVillage(s) {
+    const craftBtns = CRAFTS.map(r => {
+      const ok = canAfford(r.need) && !(r.flag && state[r.flag]);
+      const own = r.flag && state[r.flag];
+      return `<button ${ok ? '' : 'disabled'} data-craft="${r.id}">
+        ${own ? '✓ ' : ''}Craft ${r.name}
+        <span class="cost">${own ? 'already owned' : r.desc + ' — ' + costText(r.need)}</span>
+      </button>`;
+    }).join('');
+
+    const sellBtns = Object.keys(SELL).filter(k => state[k] > 0).map(k => {
+      const v = SELL[k];
+      return `<button data-sell="${k}">Sell 1 ${v.name}
+        <span class="cost">+${v.price}g  (have ${state[k]})</span>
+      </button>`;
+    }).join('');
+
+    const sellAll = Object.keys(SELL).filter(k => state[k] > 0).length > 1
+      ? `<button class="primary" data-sellall="1">Sell everything<span class="cost">all raw + goods</span></button>`
+      : '';
+
+    s.innerHTML = `
+      <h2>🏘️ Village</h2>
+      <p class="flavor">The village blacksmith and merchant are here. Craft tools and goods, and sell what you've gathered for gold.</p>
+      <h3 style="color:#ffd166;margin:6px 0 8px">Craft</h3>
+      <div class="actions">${craftBtns}</div>
+      <h3 style="color:#ffd166;margin:14px 0 8px">Sell</h3>
+      <div class="actions">${sellBtns || '<p class="flavor">Nothing to sell yet.</p>'}${sellAll}</div>
+      <div style="margin-top:14px">${backBtn()}</div>
+    `;
+
+    s.querySelectorAll('[data-craft]').forEach(b => b.onclick = () => craft(b.dataset.craft));
+    s.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => sell(b.dataset.sell, 1));
+    const sa = s.querySelector('[data-sellall]');
+    if (sa) sa.onclick = sellAll_;
+    wireBack(s);
+  }
+
+  function craft(id) {
+    const r = CRAFTS.find(x => x.id === id);
+    if (!r || !canAfford(r.need)) return;
+    if (r.flag && state[r.flag]) return;
+    pay(r.need);
+    if (r.flag) state[r.flag] = true;
+    if (r.gives) Object.keys(r.gives).forEach(k => state[k] += r.gives[k]);
+    log('Crafted ' + r.name + '.', 'good');
+    render();
+  }
+
+  function sell(k, n) {
+    if (state[k] < n) return;
+    state[k] -= n;
+    state.gold += SELL[k].price * n;
+    log('Sold ' + n + ' ' + SELL[k].name.toLowerCase() + ' for ' + (SELL[k].price*n) + 'g.', 'gold');
+    checkWin();
+    render();
+  }
+
+  function sellAll_() {
+    let total = 0;
+    Object.keys(SELL).forEach(k => {
+      if (state[k] > 0) {
+        total += SELL[k].price * state[k];
+        state[k] = 0;
+      }
+    });
+    state.gold += total;
+    log('Sold everything for ' + total + 'g.', 'gold');
+    checkWin();
+    render();
+  }
+
+  // ---------- prairie ----------
+  function renderPrairie(s) {
+    s.innerHTML = `
+      <h2>🌾 Prairie</h2>
+      <p class="flavor">Rolling grasslands. Pick berries and gather loose stones on the ground. Safe and quiet — nothing dangerous out here.</p>
+      <div class="actions">
+        <button data-act="berries">Forage berries<span class="cost">+1–2 berries</span></button>
+        <button data-act="stone">Gather stone<span class="cost">+1 stone</span></button>
+        <button data-act="rest">Rest a while<span class="cost">+20 HP</span></button>
+      </div>
+      <div style="margin-top:14px">${backBtn()}</div>
+    `;
+    s.querySelector('[data-act="berries"]').onclick = () => {
+      const n = 1 + (Math.random() < 0.4 ? 1 : 0);
+      state.berries += n;
+      log('Foraged ' + n + ' berries.', 'good');
+      render();
+    };
+    s.querySelector('[data-act="stone"]').onclick = () => {
+      state.stone += 1;
+      log('Gathered a stone.', 'good');
+      render();
+    };
+    s.querySelector('[data-act="rest"]').onclick = () => {
+      const h = Math.min(20, state.maxHp - state.hp);
+      if (h === 0) { log('Already at full health.'); return; }
+      state.hp += h;
+      log('Rested. +' + h + ' HP.', 'good');
+      render();
+    };
+    wireBack(s);
+  }
+
+  // ---------- forest ----------
+  function renderForest(s) {
+    s.innerHTML = `
+      <h2>🌲 Forest</h2>
+      <p class="flavor">Tall pines and thick brush. Wood everywhere — but a wolf might be watching. ${state.hasAxe ? 'Your axe makes chopping easier.' : 'Without an axe you can only break small branches.'}</p>
+      <div class="actions">
+        <button data-act="chop">Chop wood<span class="cost">${state.hasAxe ? '+2–3 wood' : '+1 wood (slow)'}</span></button>
+      </div>
+      <div style="margin-top:14px">${backBtn()}</div>
+    `;
+    s.querySelector('[data-act="chop"]').onclick = () => {
+      // 25% animal chance
+      if (Math.random() < 0.25) {
+        state.encounter = { type: 'wolf', hp: 30 };
+        log('A wolf leaps out!', 'bad');
+        render();
+        return;
+      }
+      const n = state.hasAxe ? (2 + (Math.random() < 0.5 ? 1 : 0)) : 1;
+      state.wood += n;
+      log('Chopped +' + n + ' wood.', 'good');
+      render();
+    };
+    wireBack(s);
+  }
+
+  // ---------- lake ----------
+  function renderLake(s) {
+    s.innerHTML = `
+      <h2>🏞️ Lake</h2>
+      <p class="flavor">Clear water with fish darting below. ${state.hasRod ? 'Your rod is ready.' : 'You need a fishing rod to catch anything.'} Watch for gators near the reeds.</p>
+      <div class="actions">
+        <button data-act="fish" ${state.hasRod ? '' : 'disabled'}>Catch fish<span class="cost">${state.hasRod ? '+1 fish' : 'need rod'}</span></button>
+        <button data-act="eatfish" ${state.fish > 0 ? '' : 'disabled'}>Eat a raw fish<span class="cost">+15 HP (costs 1 fish)</span></button>
+        <button data-act="eatberry" ${state.berries > 0 ? '' : 'disabled'}>Eat berries<span class="cost">+5 HP (costs 1 berry)</span></button>
+      </div>
+      <div style="margin-top:14px">${backBtn()}</div>
+    `;
+    s.querySelector('[data-act="fish"]').onclick = () => {
+      if (!state.hasRod) return;
+      if (Math.random() < 0.18) {
+        state.encounter = { type: 'gator', hp: 45 };
+        log('An alligator surges from the reeds!', 'bad');
+        render();
+        return;
+      }
+      if (Math.random() < 0.25) {
+        log('The fish got away.', 'bad');
+      } else {
+        state.fish += 1;
+        log('Caught a fish.', 'good');
+      }
+      render();
+    };
+    s.querySelector('[data-act="eatfish"]').onclick = () => {
+      if (state.fish <= 0) return;
+      state.fish -= 1;
+      const h = Math.min(15, state.maxHp - state.hp);
+      state.hp += h;
+      log('Ate a raw fish. +' + h + ' HP.', 'good');
+      render();
+    };
+    s.querySelector('[data-act="eatberry"]').onclick = () => {
+      if (state.berries <= 0) return;
+      state.berries -= 1;
+      const h = Math.min(5, state.maxHp - state.hp);
+      state.hp += h;
+      log('Ate berries. +' + h + ' HP.', 'good');
+      render();
+    };
+    wireBack(s);
+  }
+
+  // ---------- encounters ----------
+  function renderEncounter(s) {
+    const e = state.encounter;
+    const name = e.type === 'wolf' ? 'Wolf' : 'Alligator';
+    const emoji = e.type === 'wolf' ? '🐺' : '🐊';
+    s.innerHTML = `
+      <h2>${emoji} ${name}!</h2>
+      <div class="encounter">
+        <h3>A ${name.toLowerCase()} is attacking you.</h3>
+        <p>Health: ${e.hp}</p>
+      </div>
+      <div class="actions">
+        <button data-act="fight" ${state.hasSpear ? '' : 'disabled'}>Fight with spear<span class="cost">${state.hasSpear ? 'deal damage — risky' : 'need spear'}</span></button>
+        <button data-act="flee">Flee<span class="cost">lose 12–20 HP</span></button>
+      </div>
+    `;
+    s.querySelector('[data-act="fight"]').onclick = () => {
+      if (!state.hasSpear) return;
+      const dmg = 12 + Math.floor(Math.random() * 12); // 12–23
+      e.hp -= dmg;
+      log('You stab — ' + dmg + ' damage to the ' + name.toLowerCase() + '.', 'good');
+      if (e.hp <= 0) {
+        log('You defeated the ' + name.toLowerCase() + '!', 'good');
+        if (e.type === 'wolf') {
+          state.pelts += 1;
+          log('Collected a wolf pelt.', 'gold');
+        } else {
+          state.fish += 3;
+          log('You salvaged 3 fish from the gator.', 'gold');
+        }
+        state.encounter = null;
+        render();
+        return;
+      }
+      // counterattack
+      const back = 8 + Math.floor(Math.random() * 10); // 8–17
+      state.hp -= back;
+      log('The ' + name.toLowerCase() + ' bites — you lose ' + back + ' HP.', 'bad');
+      checkDeath();
+      render();
+    };
+    s.querySelector('[data-act="flee"]').onclick = () => {
+      const dmg = 12 + Math.floor(Math.random() * 9);
+      state.hp -= dmg;
+      log('You flee — lose ' + dmg + ' HP, dropped back to the map.', 'bad');
+      state.encounter = null;
+      state.location = 'map';
+      checkDeath();
+      render();
+    };
+  }
+
+  // ---------- win/lose ----------
+  function checkWin() {
+    if (state.gold >= 500 && !state.over) {
+      state.over = true;
+      showOverlay(false, '🏆 You Win!', 'You earned 500 gold from the wilderness. Time to retire in style.');
+    }
+  }
+  function checkDeath() {
+    if (state.hp <= 0 && !state.over) {
+      state.hp = 0;
+      state.over = true;
+      showOverlay(true, '💀 You Died', 'The wilderness got the better of you. Better luck next run.');
+    }
+  }
+
+  function showOverlay(bad, title, msg) {
+    const o = document.createElement('div');
+    o.className = 'overlay' + (bad ? ' bad' : '');
+    o.innerHTML = `<div class="box"><h2>${title}</h2><p>${msg}</p><button>Play again</button></div>`;
+    o.querySelector('button').onclick = () => location.reload();
+    document.body.appendChild(o);
+  }
+
+  // ---------- boot ----------
+  document.getElementById('reset-btn').onclick = () => {
+    if (!confirm('Start over from scratch? Your saved progress will be erased.')) return;
+    wipe();
+    location.reload();
+  };
+
+  if (load()) {
+    log('Welcome back — progress restored.');
+  } else {
+    log('You wake up at the edge of the wilderness with nothing but your wits.');
+    log('Tip: gather wood and stone, craft an axe, then make furniture to sell.');
+  }
+  render();
+</script>
+
+</body>
+</html>
