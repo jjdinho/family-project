@@ -32,10 +32,10 @@
 
     header {
       text-align: center;
-      padding: 24px 16px 8px;
+      padding: 20px 16px 6px;
     }
     header h1 {
-      font-size: 2.2rem;
+      font-size: 2rem;
       color: #8ed081;
       letter-spacing: 3px;
       text-transform: uppercase;
@@ -43,16 +43,16 @@
     header p {
       color: #8aa89a;
       margin-top: 4px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     #game {
       width: 100%;
-      max-width: 760px;
-      padding: 16px;
+      max-width: 820px;
+      padding: 12px 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .status {
@@ -62,7 +62,7 @@
       background: #1a2e23;
       border: 1px solid #2b4635;
       border-radius: 10px;
-      padding: 12px 14px;
+      padding: 10px 14px;
     }
     .status .cell { font-size: 0.85rem; color: #b8ccbd; }
     .status .cell b { color: #ffd166; font-size: 1.1rem; display: block; margin-top: 2px; }
@@ -83,112 +83,58 @@
       background: #16261d;
       border: 1px solid #2b4635;
       border-radius: 10px;
-      padding: 10px 14px;
+      padding: 8px 14px;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px 18px;
-      font-size: 0.9rem;
+      gap: 8px 16px;
+      font-size: 0.85rem;
     }
     .inventory .item { color: #b8ccbd; }
     .inventory .item b { color: #fff; }
     .inventory .tool { color: #8ed081; }
     .inventory .tool.off { color: #566; text-decoration: line-through; }
 
-    .scene {
-      background: #16261d;
+    #world {
+      display: block;
+      background: #0f1d14;
       border: 1px solid #2b4635;
       border-radius: 12px;
-      padding: 18px;
-      min-height: 280px;
+      width: 100%;
+      height: auto;
+      touch-action: none;
     }
 
-    .scene h2 {
-      font-size: 1.4rem;
-      color: #8ed081;
-      margin-bottom: 6px;
-    }
-    .scene .flavor {
+    .hint {
+      background: #16261d;
+      border: 1px solid #2b4635;
+      border-radius: 10px;
+      padding: 7px 14px;
       color: #8aa89a;
-      font-size: 0.9rem;
-      margin-bottom: 14px;
-      line-height: 1.4;
+      font-size: 0.8rem;
+      text-align: center;
     }
-
-    .actions {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 10px;
-    }
-
-    .actions button, .map button {
+    .hint kbd {
       background: #244534;
       color: #eee;
-      border: 1px solid #3d6e51;
-      border-radius: 8px;
-      padding: 12px 14px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      text-align: left;
-      font-family: inherit;
-      transition: background 0.15s, transform 0.05s;
-    }
-    .actions button:hover:not(:disabled),
-    .map button:hover {
-      background: #2f5a42;
-    }
-    .actions button:active:not(:disabled) { transform: translateY(1px); }
-    .actions button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    .actions button .cost {
-      display: block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: monospace;
       font-size: 0.75rem;
-      color: #b8ccbd;
-      margin-top: 3px;
+      border: 1px solid #3d6e51;
     }
-    .actions button.primary {
-      background: #3d6e51;
-      border-color: #5a9a75;
-    }
-    .actions button.primary:hover:not(:disabled) { background: #4c8763; }
-
-    .map {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    .map button {
-      padding: 0;
-      height: 120px;
-      font-size: 1.1rem;
-      text-align: center;
-      border-radius: 14px;
-      overflow: hidden;
-      position: relative;
-    }
-    .map button .emoji {
-      font-size: 2.6rem;
-      display: block;
-      margin-bottom: 4px;
-    }
-    .map .m-village { background: linear-gradient(135deg, #6b4f2a, #a87b3d); border-color: #c89a5a; }
-    .map .m-prairie { background: linear-gradient(135deg, #8a8033, #c9bd4e); border-color: #e0d66e; }
-    .map .m-forest  { background: linear-gradient(135deg, #1d4a2b, #3d7e4c); border-color: #5aa06e; }
-    .map .m-lake    { background: linear-gradient(135deg, #1f4f6e, #3a88b6); border-color: #5ab3d6; }
 
     .log {
       background: #0b1610;
       border: 1px solid #2b4635;
       border-radius: 10px;
-      padding: 10px 14px;
-      max-height: 140px;
+      padding: 8px 14px;
+      max-height: 120px;
       overflow-y: auto;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: #b8ccbd;
       line-height: 1.5;
     }
-    .log .entry { margin-bottom: 2px; }
+    .log .entry { margin-bottom: 1px; }
     .log .good  { color: #8ed081; }
     .log .bad   { color: #ef476f; }
     .log .gold  { color: #ffd166; }
@@ -206,41 +152,87 @@
       background: #1a2e23;
       border: 2px solid #8ed081;
       border-radius: 14px;
-      padding: 28px 32px;
-      text-align: center;
-      max-width: 420px;
+      padding: 22px 26px;
+      max-width: 480px;
+      width: calc(100% - 32px);
     }
-    .overlay h2 { color: #8ed081; margin-bottom: 8px; font-size: 1.6rem; }
-    .overlay.bad h2 { color: #ef476f; }
+    .overlay.danger .box { border-color: #ef476f; }
     .overlay.bad .box { border-color: #ef476f; }
-    .overlay p { color: #b8ccbd; margin-bottom: 16px; line-height: 1.5; }
-    .overlay button {
-      background: #3d6e51;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 22px;
-      font-size: 1rem;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .overlay button:hover { background: #4c8763; }
+    .overlay h2 { color: #8ed081; margin-bottom: 8px; font-size: 1.45rem; text-align: center; }
+    .overlay.danger h2 { color: #ef476f; }
+    .overlay.bad h2 { color: #ef476f; }
+    .overlay p { color: #b8ccbd; margin-bottom: 10px; line-height: 1.45; text-align: center; font-size: 0.9rem; }
 
-    .encounter {
-      background: #3a1a1a;
-      border: 2px solid #ef476f;
-      border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 14px;
+    .menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin: 12px 0;
     }
-    .encounter h3 { color: #ef476f; margin-bottom: 6px; }
-    .encounter p { color: #f4c1c9; font-size: 0.9rem; margin-bottom: 10px; }
+    .menu-list .row {
+      padding: 7px 10px;
+      border-radius: 6px;
+      background: #0f1d14;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+    }
+    .menu-list .row.off { opacity: 0.42; }
+    .menu-list .row .name { flex: 1; color: #b8ccbd; line-height: 1.35; }
+    .menu-list .row .name b { color: #fff; }
+    .menu-list .row .sub { color: #8aa89a; font-size: 0.78rem; display: block; }
+    .menu-list .row .gain { color: #ffd166; font-size: 0.9rem; white-space: nowrap; }
+    .menu-list .row .key {
+      display: inline-block;
+      min-width: 24px;
+      text-align: center;
+      color: #0b1610;
+      background: #8ed081;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+    .overlay.danger .menu-list .row .key { background: #ef476f; color: #0b1610; }
+    .menu-list .row.off .key { background: #566; color: #0b1610; }
+
+    .enemy-hpbar {
+      height: 10px;
+      background: #3a1a1a;
+      border: 1px solid #5a2a2a;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 4px 0 8px;
+    }
+    .enemy-hpbar > div {
+      height: 100%;
+      background: linear-gradient(90deg, #ef476f, #ffd166);
+      transition: width 0.25s;
+    }
+
+    .footer-tip {
+      text-align: center;
+      color: #8aa89a;
+      font-size: 0.78rem;
+      margin-top: 6px;
+    }
+    .footer-tip kbd {
+      background: #244534;
+      color: #eee;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.75rem;
+      border: 1px solid #3d6e51;
+    }
 
     footer {
       margin-top: auto;
-      padding: 18px;
+      padding: 14px;
       color: #445;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
   </style>
 </head>
@@ -250,7 +242,7 @@
 
 <header>
   <h1>Wilderness</h1>
-  <p>Gather. Craft. Survive. Sell for gold.</p>
+  <p>Walk the land. Gather. Craft. Survive. Sell for gold.</p>
 </header>
 
 <div id="game">
@@ -268,63 +260,184 @@
 
   <div class="inventory" id="inv"></div>
 
-  <div class="scene" id="scene"></div>
+  <canvas id="world" width="768" height="480" tabindex="0"></canvas>
+
+  <div class="hint">
+    <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> or <kbd>WASD</kbd> walk &nbsp;·&nbsp;
+    <kbd>Space</kbd> interact with 🌲 🪨 🫐 💧 🔨 💰 &nbsp;·&nbsp;
+    <kbd>E</kbd> eat &nbsp;·&nbsp;
+    <kbd>R</kbd> rest by 🔥
+  </div>
 
   <div class="log" id="log"></div>
 
 </div>
 
+<div id="overlay" class="overlay" style="display:none"><div id="overlay-box" class="box"></div></div>
+
 <footer>&copy; 2026 Johnson Family</footer>
 
 <script>
-  // ---------- game state ----------
-  const SAVE_KEY = 'wilderness_save_v1';
+  // ==== CONFIG ====
+  const SAVE_KEY = 'wilderness_save_v2';
+  const TILE = 24;
+  const COLS = 32;
+  const ROWS = 20;
+  const MOVE_COOLDOWN = 110;
+  const ENEMY_MOVE_MS = 560;
+  const RESPAWN_MS = 18000;
+  const ENEMY_RESPAWN_MS = 22000;
+  const GOAL_GOLD = 500;
+
+  // ==== TILE DEFINITIONS ====
+  const TILES = {
+    grass:      { walk: true,  bg: '#3d6e51' },
+    path:       { walk: true,  bg: '#b89a6a' },
+    sand:       { walk: true,  bg: '#c9b378' },
+    floor:      { walk: true,  bg: '#244b32' },
+    water:      { walk: false, bg: '#2a6a94', emoji: '💧', dim: true },
+    tree:       { walk: false, bg: '#244b32', emoji: '🌲' },
+    rock:       { walk: false, bg: '#3d6e51', emoji: '🪨' },
+    bush:       { walk: false, bg: '#3d6e51', emoji: '🫐' },
+    blacksmith: { walk: false, bg: '#6b4f2a', emoji: '🔨' },
+    merchant:   { walk: false, bg: '#6b4f2a', emoji: '💰' },
+    hut:        { walk: false, bg: '#6b4f2a', emoji: '🏠' },
+    fire:       { walk: false, bg: '#b89a6a', emoji: '🔥' },
+  };
+
+  function baseTileAt(x, y) {
+    if (y < 10 && x < 16) return 'path';
+    if (y < 10)           return 'sand';
+    if (x < 16)           return 'grass';
+    return 'floor';
+  }
+
+  // ==== STATE ====
   const initial = () => ({
-    hp: 100,
-    maxHp: 100,
-    gold: 0,
-    wood: 0,
-    stone: 0,
-    berries: 0,
-    fish: 0,
-    pelts: 0,
-    hasAxe: false,
-    hasSpear: false,
-    hasRod: false,
-    location: 'map',
-    encounter: null, // {type, hp}
+    hp: 100, maxHp: 100, gold: 0,
+    wood: 0, stone: 0, berries: 0, fish: 0, pelts: 0,
+    goods_stool: 0, goods_chair: 0, goods_table: 0, goods_bed: 0,
+    hasAxe: false, hasSpear: false, hasRod: false,
+    px: 7, py: 5,
     over: false,
   });
   const state = initial();
 
-  // ---------- recipes & prices ----------
+  let map = [];
+  let enemies = [];
+  let overlayType = null;
+  let combatEnemy = null;
+  let lastMove = 0;
+  let lastEnemyMove = 0;
+  let lastEnemyRespawn = 0;
+  let lastRest = 0;
+  let lastSave = 0;
+  let keys = {};
+
+  // ==== CRAFTS & PRICES ====
   const CRAFTS = [
-    { id: 'axe',   name: 'Axe',           need: { wood: 3, stone: 2 }, flag: 'hasAxe',   desc: 'Chop wood faster' },
-    { id: 'spear', name: 'Spear',         need: { wood: 2, stone: 1 }, flag: 'hasSpear', desc: 'Fight wild animals' },
-    { id: 'rod',   name: 'Fishing Rod',   need: { wood: 3 },           flag: 'hasRod',   desc: 'Catch fish at the lake' },
-    { id: 'stool', name: 'Wooden Stool',  need: { wood: 2 },           gives: { goods_stool: 1 },  desc: 'Sells for 10 gold' },
-    { id: 'chair', name: 'Wooden Chair',  need: { wood: 4 },           gives: { goods_chair: 1 },  desc: 'Sells for 25 gold' },
-    { id: 'table', name: 'Wooden Table',  need: { wood: 6 },           gives: { goods_table: 1 },  desc: 'Sells for 45 gold' },
-    { id: 'bed',   name: 'Wooden Bed',    need: { wood: 10, berries: 2 }, gives: { goods_bed: 1 }, desc: 'Sells for 90 gold' },
+    { id: 'axe',   key: '1', name: 'Axe',           need: { wood: 3, stone: 2 }, flag: 'hasAxe',   desc: 'Chop wood faster' },
+    { id: 'spear', key: '2', name: 'Spear',         need: { wood: 2, stone: 1 }, flag: 'hasSpear', desc: 'Fight wild animals' },
+    { id: 'rod',   key: '3', name: 'Fishing Rod',   need: { wood: 3 },           flag: 'hasRod',   desc: 'Catch fish at the lake' },
+    { id: 'stool', key: '4', name: 'Wooden Stool',  need: { wood: 2 },           gives: { goods_stool: 1 }, desc: 'Sells for 10g' },
+    { id: 'chair', key: '5', name: 'Wooden Chair',  need: { wood: 4 },           gives: { goods_chair: 1 }, desc: 'Sells for 25g' },
+    { id: 'table', key: '6', name: 'Wooden Table',  need: { wood: 6 },           gives: { goods_table: 1 }, desc: 'Sells for 45g' },
+    { id: 'bed',   key: '7', name: 'Wooden Bed',    need: { wood: 10, berries: 2 }, gives: { goods_bed: 1 }, desc: 'Sells for 90g' },
   ];
-
-  // sell prices (also inventory counters for goods_*)
   const SELL = {
-    wood:    { name: 'Wood',    price: 2 },
-    stone:   { name: 'Stone',   price: 3 },
-    berries: { name: 'Berries', price: 2 },
-    fish:    { name: 'Fish',    price: 6 },
-    pelts:   { name: 'Wolf Pelt', price: 15 },
-    goods_stool: { name: 'Stool', price: 10 },
-    goods_chair: { name: 'Chair', price: 25 },
-    goods_table: { name: 'Table', price: 45 },
-    goods_bed:   { name: 'Bed',   price: 90 },
+    wood:        { name: 'Wood',      price: 2  },
+    stone:       { name: 'Stone',     price: 3  },
+    berries:     { name: 'Berries',   price: 2  },
+    fish:        { name: 'Fish',      price: 6  },
+    pelts:       { name: 'Wolf Pelt', price: 15 },
+    goods_stool: { name: 'Stool',     price: 10 },
+    goods_chair: { name: 'Chair',     price: 25 },
+    goods_table: { name: 'Table',     price: 45 },
+    goods_bed:   { name: 'Bed',       price: 90 },
   };
+  const SELL_ORDER = Object.keys(SELL);
 
-  // ensure goods counters exist
-  Object.keys(SELL).filter(k => k.startsWith('goods_')).forEach(k => state[k] = 0);
+  // ==== MAP BUILD ====
+  function buildMap() {
+    map = [];
+    for (let y = 0; y < ROWS; y++) {
+      map[y] = [];
+      for (let x = 0; x < COLS; x++) map[y][x] = baseTileAt(x, y);
+    }
+    // Lake water blob in top-right
+    const lcx = 24, lcy = 5, lr = 4.5;
+    for (let y = 0; y < 10; y++)
+      for (let x = 16; x < COLS; x++)
+        if (Math.hypot(x - lcx, y - lcy) < lr) map[y][x] = 'water';
 
-  // ---------- logging ----------
+    // Village structures
+    map[3][4]  = 'blacksmith';
+    map[3][9]  = 'merchant';
+    map[2][2]  = 'hut';
+    map[5][2]  = 'hut';
+    map[2][13] = 'hut';
+    map[5][13] = 'hut';
+    map[7][6]  = 'fire';
+
+    // Prairie: scatter rocks and berry bushes
+    for (let y = 11; y < ROWS - 1; y++) {
+      for (let x = 1; x < 15; x++) {
+        const r = Math.random();
+        if (r < 0.08)      map[y][x] = 'rock';
+        else if (r < 0.20) map[y][x] = 'bush';
+      }
+    }
+
+    // Forest: scatter trees
+    for (let y = 11; y < ROWS - 1; y++) {
+      for (let x = 17; x < COLS - 1; x++) {
+        if (Math.random() < 0.35) map[y][x] = 'tree';
+      }
+    }
+
+    // Clear biome-boundary corridors so you can always walk between biomes
+    for (let y = 0; y < ROWS; y++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        const x = 16 + dx;
+        if (!TILES[map[y][x]].walk && map[y][x] !== 'water') map[y][x] = baseTileAt(x, y);
+      }
+    }
+    for (let x = 0; x < COLS; x++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        const y = 10 + dy;
+        if (y < 0 || y >= ROWS) continue;
+        if (!TILES[map[y][x]].walk && map[y][x] !== 'water') map[y][x] = baseTileAt(x, y);
+      }
+    }
+
+    // Ensure spawn is clear
+    map[5][7] = 'path';
+  }
+
+  function findSpawn(x1, y1, x2, y2) {
+    for (let i = 0; i < 80; i++) {
+      const x = x1 + Math.floor(Math.random() * (x2 - x1));
+      const y = y1 + Math.floor(Math.random() * (y2 - y1));
+      if (TILES[map[y][x]].walk
+          && !(state.px === x && state.py === y)
+          && !enemies.some(e => e.x === x && e.y === y && e.hp > 0)) {
+        return { x, y };
+      }
+    }
+    return null;
+  }
+
+  function spawnInitialEnemies() {
+    enemies = [];
+    for (let i = 0; i < 2; i++) {
+      const p = findSpawn(18, 12, COLS - 1, ROWS - 1);
+      if (p) enemies.push({ x: p.x, y: p.y, type: 'wolf', hp: 30 });
+    }
+    const g = findSpawn(18, 1, COLS - 1, 9);
+    if (g) enemies.push({ x: g.x, y: g.y, type: 'gator', hp: 45 });
+  }
+
+  // ==== LOG ====
   const logEl = document.getElementById('log');
   function log(msg, cls) {
     const e = document.createElement('div');
@@ -334,18 +447,14 @@
     while (logEl.childElementCount > 40) logEl.removeChild(logEl.lastChild);
   }
 
-  // ---------- helpers ----------
-  function canAfford(need) {
-    return Object.keys(need).every(k => state[k] >= need[k]);
-  }
-  function pay(need) {
-    Object.keys(need).forEach(k => state[k] -= need[k]);
-  }
-  function costText(need) {
+  // ==== HELPERS ====
+  function canAfford(need) { return Object.keys(need).every(k => state[k] >= need[k]); }
+  function pay(need)       { Object.keys(need).forEach(k => state[k] -= need[k]); }
+  function costText(need)  {
     return Object.keys(need).map(k => need[k] + ' ' + (SELL[k]?.name || k).toLowerCase()).join(', ');
   }
 
-  // ---------- save / load ----------
+  // ==== SAVE / LOAD ====
   function save() {
     if (state.over) { try { localStorage.removeItem(SAVE_KEY); } catch(e){} return; }
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch(e){}
@@ -359,347 +468,550 @@
       return true;
     } catch(e) { return false; }
   }
-  function wipe() {
-    try { localStorage.removeItem(SAVE_KEY); } catch(e){}
-  }
 
-  // ---------- render ----------
-  function render() {
-    renderStatus();
-    renderInventory();
-    renderScene();
-    save();
-  }
-
+  // ==== HUD RENDER ====
   function renderStatus() {
     document.getElementById('s-hp').textContent = state.hp;
     document.getElementById('s-gold').textContent = state.gold;
     document.getElementById('s-hpbar').style.width = Math.max(0, state.hp) + '%';
   }
-
   function renderInventory() {
     const inv = document.getElementById('inv');
     const items = [
-      ['Wood',    state.wood],
-      ['Stone',   state.stone],
-      ['Berries', state.berries],
-      ['Fish',    state.fish],
-      ['Pelts',   state.pelts],
-      ['Stools',  state.goods_stool],
-      ['Chairs',  state.goods_chair],
-      ['Tables',  state.goods_table],
-      ['Beds',    state.goods_bed],
+      ['Wood', state.wood], ['Stone', state.stone], ['Berries', state.berries],
+      ['Fish', state.fish], ['Pelts', state.pelts],
+      ['Stools', state.goods_stool], ['Chairs', state.goods_chair],
+      ['Tables', state.goods_table], ['Beds', state.goods_bed],
     ];
     let html = items.map(([n, v]) => `<span class="item">${n}: <b>${v}</b></span>`).join('');
-    html += `<span class="tool ${state.hasAxe ? '' : 'off'}">🪓 Axe</span>`;
+    html += `<span class="tool ${state.hasAxe   ? '' : 'off'}">🪓 Axe</span>`;
     html += `<span class="tool ${state.hasSpear ? '' : 'off'}">🔱 Spear</span>`;
-    html += `<span class="tool ${state.hasRod ? '' : 'off'}">🎣 Rod</span>`;
+    html += `<span class="tool ${state.hasRod   ? '' : 'off'}">🎣 Rod</span>`;
     inv.innerHTML = html;
   }
 
-  function renderScene() {
-    const s = document.getElementById('scene');
-    if (state.location === 'map') return renderMap(s);
-    if (state.encounter) return renderEncounter(s);
-    if (state.location === 'village') return renderVillage(s);
-    if (state.location === 'prairie') return renderPrairie(s);
-    if (state.location === 'forest')  return renderForest(s);
-    if (state.location === 'lake')    return renderLake(s);
-  }
+  // ==== CANVAS RENDER ====
+  const canvas = document.getElementById('world');
+  const ctx = canvas.getContext('2d');
 
-  // ---------- map ----------
-  function renderMap(s) {
-    s.innerHTML = `
-      <h2>Where to?</h2>
-      <p class="flavor">Pick a habitat. You can travel freely between them.</p>
-      <div class="map">
-        <button class="m-village" data-go="village"><span class="emoji">🏘️</span>Village</button>
-        <button class="m-prairie" data-go="prairie"><span class="emoji">🌾</span>Prairie</button>
-        <button class="m-forest"  data-go="forest"><span class="emoji">🌲</span>Forest</button>
-        <button class="m-lake"    data-go="lake"><span class="emoji">🏞️</span>Lake</button>
-      </div>
-    `;
-    s.querySelectorAll('button').forEach(b => {
-      b.onclick = () => { state.location = b.dataset.go; render(); };
-    });
-  }
-
-  function backBtn() {
-    return `<button data-back="1" class="primary">&larr; Back to map</button>`;
-  }
-  function wireBack(s) {
-    const b = s.querySelector('[data-back]');
-    if (b) b.onclick = () => { state.location = 'map'; render(); };
-  }
-
-  // ---------- village ----------
-  function renderVillage(s) {
-    const craftBtns = CRAFTS.map(r => {
-      const ok = canAfford(r.need) && !(r.flag && state[r.flag]);
-      const own = r.flag && state[r.flag];
-      return `<button ${ok ? '' : 'disabled'} data-craft="${r.id}">
-        ${own ? '✓ ' : ''}Craft ${r.name}
-        <span class="cost">${own ? 'already owned' : r.desc + ' — ' + costText(r.need)}</span>
-      </button>`;
-    }).join('');
-
-    const sellBtns = Object.keys(SELL).filter(k => state[k] > 0).map(k => {
-      const v = SELL[k];
-      return `<button data-sell="${k}">Sell 1 ${v.name}
-        <span class="cost">+${v.price}g  (have ${state[k]})</span>
-      </button>`;
-    }).join('');
-
-    const sellAll = Object.keys(SELL).filter(k => state[k] > 0).length > 1
-      ? `<button class="primary" data-sellall="1">Sell everything<span class="cost">all raw + goods</span></button>`
-      : '';
-
-    s.innerHTML = `
-      <h2>🏘️ Village</h2>
-      <p class="flavor">The village blacksmith and merchant are here. Craft tools and goods, and sell what you've gathered for gold.</p>
-      <h3 style="color:#ffd166;margin:6px 0 8px">Craft</h3>
-      <div class="actions">${craftBtns}</div>
-      <h3 style="color:#ffd166;margin:14px 0 8px">Sell</h3>
-      <div class="actions">${sellBtns || '<p class="flavor">Nothing to sell yet.</p>'}${sellAll}</div>
-      <div style="margin-top:14px">${backBtn()}</div>
-    `;
-
-    s.querySelectorAll('[data-craft]').forEach(b => b.onclick = () => craft(b.dataset.craft));
-    s.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => sell(b.dataset.sell, 1));
-    const sa = s.querySelector('[data-sellall]');
-    if (sa) sa.onclick = sellAll_;
-    wireBack(s);
-  }
-
-  function craft(id) {
-    const r = CRAFTS.find(x => x.id === id);
-    if (!r || !canAfford(r.need)) return;
-    if (r.flag && state[r.flag]) return;
-    pay(r.need);
-    if (r.flag) state[r.flag] = true;
-    if (r.gives) Object.keys(r.gives).forEach(k => state[k] += r.gives[k]);
-    log('Crafted ' + r.name + '.', 'good');
-    render();
-  }
-
-  function sell(k, n) {
-    if (state[k] < n) return;
-    state[k] -= n;
-    state.gold += SELL[k].price * n;
-    log('Sold ' + n + ' ' + SELL[k].name.toLowerCase() + ' for ' + (SELL[k].price*n) + 'g.', 'gold');
-    checkWin();
-    render();
-  }
-
-  function sellAll_() {
-    let total = 0;
-    Object.keys(SELL).forEach(k => {
-      if (state[k] > 0) {
-        total += SELL[k].price * state[k];
-        state[k] = 0;
+  function drawWorld() {
+    ctx.fillStyle = '#0f1d14';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (let y = 0; y < ROWS; y++) {
+      for (let x = 0; x < COLS; x++) {
+        const t = map[y][x];
+        const def = TILES[t];
+        ctx.fillStyle = def.bg;
+        ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+        if (def.emoji) {
+          ctx.font = (TILE - 4) + 'px serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          if (def.dim) ctx.globalAlpha = 0.55;
+          ctx.fillText(def.emoji, x * TILE + TILE/2, y * TILE + TILE/2 + 1);
+          ctx.globalAlpha = 1;
+        }
       }
-    });
-    state.gold += total;
-    log('Sold everything for ' + total + 'g.', 'gold');
-    checkWin();
-    render();
+    }
+    for (const e of enemies) {
+      if (e.hp <= 0) continue;
+      ctx.font = (TILE - 4) + 'px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(e.type === 'wolf' ? '🐺' : '🐊',
+        e.x * TILE + TILE/2, e.y * TILE + TILE/2 + 1);
+    }
+    // Player
+    ctx.font = (TILE - 4) + 'px serif';
+    ctx.fillText('🧑', state.px * TILE + TILE/2, state.py * TILE + TILE/2 + 1);
   }
 
-  // ---------- prairie ----------
-  function renderPrairie(s) {
-    s.innerHTML = `
-      <h2>🌾 Prairie</h2>
-      <p class="flavor">Rolling grasslands. Pick berries and gather loose stones on the ground. Safe and quiet — nothing dangerous out here.</p>
-      <div class="actions">
-        <button data-act="berries">Forage berries<span class="cost">+1–2 berries</span></button>
-        <button data-act="stone">Gather stone<span class="cost">+1 stone</span></button>
-        <button data-act="rest">Rest a while<span class="cost">+20 HP</span></button>
-      </div>
-      <div style="margin-top:14px">${backBtn()}</div>
-    `;
-    s.querySelector('[data-act="berries"]').onclick = () => {
-      const n = 1 + (Math.random() < 0.4 ? 1 : 0);
-      state.berries += n;
-      log('Foraged ' + n + ' berries.', 'good');
-      render();
-    };
-    s.querySelector('[data-act="stone"]').onclick = () => {
-      state.stone += 1;
-      log('Gathered a stone.', 'good');
-      render();
-    };
-    s.querySelector('[data-act="rest"]').onclick = () => {
-      const h = Math.min(20, state.maxHp - state.hp);
-      if (h === 0) { log('Already at full health.'); return; }
-      state.hp += h;
-      log('Rested. +' + h + ' HP.', 'good');
-      render();
-    };
-    wireBack(s);
+  function renderAll() {
+    renderStatus();
+    renderInventory();
+    drawWorld();
   }
 
-  // ---------- forest ----------
-  function renderForest(s) {
-    s.innerHTML = `
-      <h2>🌲 Forest</h2>
-      <p class="flavor">Tall pines and thick brush. Wood everywhere — but a wolf might be watching. ${state.hasAxe ? 'Your axe makes chopping easier.' : 'Without an axe you can only break small branches.'}</p>
-      <div class="actions">
-        <button data-act="chop">Chop wood<span class="cost">${state.hasAxe ? '+2–3 wood' : '+1 wood (slow)'}</span></button>
-      </div>
-      <div style="margin-top:14px">${backBtn()}</div>
-    `;
-    s.querySelector('[data-act="chop"]').onclick = () => {
-      // 25% animal chance
-      if (Math.random() < 0.25) {
-        state.encounter = { type: 'wolf', hp: 30 };
-        log('A wolf leaps out!', 'bad');
-        render();
-        return;
-      }
-      const n = state.hasAxe ? (2 + (Math.random() < 0.5 ? 1 : 0)) : 1;
-      state.wood += n;
-      log('Chopped +' + n + ' wood.', 'good');
-      render();
-    };
-    wireBack(s);
+  // ==== MOVEMENT & INTERACTION ====
+  function tryMove(dx, dy) {
+    if (overlayType) return;
+    const now = performance.now();
+    if (now - lastMove < MOVE_COOLDOWN) return;
+    const nx = state.px + dx, ny = state.py + dy;
+    if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) return;
+    if (!TILES[map[ny][nx]].walk) return;
+    const e = enemies.find(x => x.x === nx && x.y === ny && x.hp > 0);
+    if (e) {
+      state.px = nx; state.py = ny;
+      lastMove = now;
+      startCombat(e);
+      return;
+    }
+    state.px = nx; state.py = ny;
+    lastMove = now;
   }
 
-  // ---------- lake ----------
-  function renderLake(s) {
-    s.innerHTML = `
-      <h2>🏞️ Lake</h2>
-      <p class="flavor">Clear water with fish darting below. ${state.hasRod ? 'Your rod is ready.' : 'You need a fishing rod to catch anything.'} Watch for gators near the reeds.</p>
-      <div class="actions">
-        <button data-act="fish" ${state.hasRod ? '' : 'disabled'}>Catch fish<span class="cost">${state.hasRod ? '+1 fish' : 'need rod'}</span></button>
-        <button data-act="eatfish" ${state.fish > 0 ? '' : 'disabled'}>Eat a raw fish<span class="cost">+15 HP (costs 1 fish)</span></button>
-        <button data-act="eatberry" ${state.berries > 0 ? '' : 'disabled'}>Eat berries<span class="cost">+5 HP (costs 1 berry)</span></button>
-      </div>
-      <div style="margin-top:14px">${backBtn()}</div>
-    `;
-    s.querySelector('[data-act="fish"]').onclick = () => {
-      if (!state.hasRod) return;
-      if (Math.random() < 0.18) {
-        state.encounter = { type: 'gator', hp: 45 };
-        log('An alligator surges from the reeds!', 'bad');
-        render();
-        return;
-      }
-      if (Math.random() < 0.25) {
-        log('The fish got away.', 'bad');
-      } else {
-        state.fish += 1;
-        log('Caught a fish.', 'good');
-      }
-      render();
-    };
-    s.querySelector('[data-act="eatfish"]').onclick = () => {
-      if (state.fish <= 0) return;
+  function interact() {
+    if (overlayType) return;
+    const dirs = [[0,-1],[1,0],[0,1],[-1,0]];
+    for (const [dx, dy] of dirs) {
+      const fx = state.px + dx, fy = state.py + dy;
+      if (fx < 0 || fx >= COLS || fy < 0 || fy >= ROWS) continue;
+      const t = map[fy][fx];
+      if (t === 'tree')       return doChop(fx, fy);
+      if (t === 'rock')       return doStone(fx, fy);
+      if (t === 'bush')       return doBerries(fx, fy);
+      if (t === 'water')      return doFish(fx, fy);
+      if (t === 'blacksmith') return openCraft();
+      if (t === 'merchant')   return openSell();
+    }
+    log('Nothing to do here. Walk next to a 🌲, 🪨, 🫐, 💧, 🔨, or 💰.');
+  }
+
+  function consume(x, y) {
+    const orig = map[y][x];
+    map[y][x] = baseTileAt(x, y);
+    setTimeout(() => {
+      if (state.px !== x || state.py !== y) map[y][x] = orig;
+    }, RESPAWN_MS);
+  }
+
+  function doChop(x, y) {
+    const n = state.hasAxe ? (2 + (Math.random() < 0.5 ? 1 : 0)) : 1;
+    state.wood += n;
+    log('Chopped +' + n + ' wood.', 'good');
+    consume(x, y);
+    renderAll();
+  }
+
+  function doStone(x, y) {
+    state.stone += 1;
+    log('Gathered a stone.', 'good');
+    consume(x, y);
+    renderAll();
+  }
+
+  function doBerries(x, y) {
+    const n = 1 + (Math.random() < 0.4 ? 1 : 0);
+    state.berries += n;
+    log('Foraged ' + n + ' berries.', 'good');
+    consume(x, y);
+    renderAll();
+  }
+
+  function doFish() {
+    if (!state.hasRod) { log('You need a fishing rod to fish.'); return; }
+    if (Math.random() < 0.25) {
+      log('The fish got away.', 'bad');
+    } else {
+      state.fish += 1;
+      log('Caught a fish.', 'good');
+    }
+    renderAll();
+  }
+
+  // ==== EAT / REST ====
+  function eat() {
+    if (overlayType) return;
+    if (state.hp >= state.maxHp) { log('Already at full health.'); return; }
+    if (state.fish > 0) {
       state.fish -= 1;
       const h = Math.min(15, state.maxHp - state.hp);
       state.hp += h;
       log('Ate a raw fish. +' + h + ' HP.', 'good');
-      render();
-    };
-    s.querySelector('[data-act="eatberry"]').onclick = () => {
-      if (state.berries <= 0) return;
+    } else if (state.berries > 0) {
       state.berries -= 1;
       const h = Math.min(5, state.maxHp - state.hp);
       state.hp += h;
       log('Ate berries. +' + h + ' HP.', 'good');
-      render();
-    };
-    wireBack(s);
+    } else {
+      log('Nothing to eat. Fish at the 💧 lake or forage 🫐 berries.');
+    }
+    renderAll();
   }
 
-  // ---------- encounters ----------
-  function renderEncounter(s) {
-    const e = state.encounter;
+  function rest() {
+    if (overlayType) return;
+    const nearFire = [[0,-1],[0,1],[-1,0],[1,0],[0,0]].some(([dx, dy]) => {
+      const x = state.px + dx, y = state.py + dy;
+      return map[y]?.[x] === 'fire';
+    });
+    if (!nearFire) {
+      log('You can only rest by the 🔥 village campfire.');
+      return;
+    }
+    const now = performance.now();
+    if (now - lastRest < 1200) return;
+    lastRest = now;
+    if (state.hp >= state.maxHp) { log('Already at full health.'); return; }
+    const h = Math.min(20, state.maxHp - state.hp);
+    state.hp += h;
+    log('Rested by the fire. +' + h + ' HP.', 'good');
+    renderAll();
+  }
+
+  // ==== MENUS / OVERLAYS ====
+  const overlayEl = document.getElementById('overlay');
+  const overlayBox = document.getElementById('overlay-box');
+
+  function openCraft() { overlayType = 'craft'; showOverlay(); }
+  function openSell()  { overlayType = 'sell';  showOverlay(); }
+
+  function startCombat(e) {
+    overlayType = 'combat';
+    combatEnemy = e;
+    showOverlay();
+  }
+
+  function showOverlay() {
+    overlayEl.classList.remove('bad', 'danger');
+    if      (overlayType === 'craft')  renderCraftMenu();
+    else if (overlayType === 'sell')   renderSellMenu();
+    else if (overlayType === 'combat') renderCombat();
+    else if (overlayType === 'win')    renderEnd(false, '🏆 You Win!', 'You earned ' + GOAL_GOLD + ' gold from the wilderness. Time to retire in style.');
+    else if (overlayType === 'die')    renderEnd(true,  '💀 You Died', 'The wilderness got the better of you. Better luck next run.');
+    overlayEl.style.display = 'flex';
+  }
+
+  function closeOverlay() {
+    if (overlayType === 'combat' || overlayType === 'win' || overlayType === 'die') return;
+    overlayType = null;
+    overlayEl.style.display = 'none';
+    renderAll();
+  }
+
+  function renderCraftMenu() {
+    const rows = CRAFTS.map(r => {
+      const own = r.flag && state[r.flag];
+      const ok = !own && canAfford(r.need);
+      return `<div class="row ${ok ? '' : 'off'}">
+        <span class="key">${r.key}</span>
+        <span class="name"><b>${own ? '✓ ' : ''}${r.name}</b>
+          <span class="sub">${own ? 'already owned' : r.desc + ' — ' + costText(r.need)}</span>
+        </span>
+      </div>`;
+    }).join('');
+    overlayBox.innerHTML = `
+      <h2>🔨 Blacksmith</h2>
+      <p>Press a number to craft.</p>
+      <div class="menu-list">${rows}</div>
+      <div class="footer-tip">Press <kbd>Esc</kbd> to leave</div>
+    `;
+  }
+
+  function renderSellMenu() {
+    const rows = SELL_ORDER.map((k, i) => {
+      const v = SELL[k];
+      const have = state[k] || 0;
+      const ok = have > 0;
+      return `<div class="row ${ok ? '' : 'off'}">
+        <span class="key">${i + 1}</span>
+        <span class="name"><b>Sell 1 ${v.name}</b>
+          <span class="sub">have ${have}</span>
+        </span>
+        <span class="gain">+${v.price}g</span>
+      </div>`;
+    }).join('');
+    const anything = SELL_ORDER.some(k => (state[k] || 0) > 0);
+    overlayBox.innerHTML = `
+      <h2>💰 Merchant</h2>
+      <p>Press a number to sell one. Press 0 to sell everything.</p>
+      <div class="menu-list">${rows}
+        <div class="row ${anything ? '' : 'off'}">
+          <span class="key">0</span>
+          <span class="name"><b>Sell everything</b>
+            <span class="sub">all raw goods and furniture</span>
+          </span>
+        </div>
+      </div>
+      <div class="footer-tip">Press <kbd>Esc</kbd> to leave</div>
+    `;
+  }
+
+  function renderCombat() {
+    const e = combatEnemy;
     const name = e.type === 'wolf' ? 'Wolf' : 'Alligator';
     const emoji = e.type === 'wolf' ? '🐺' : '🐊';
-    s.innerHTML = `
-      <h2>${emoji} ${name}!</h2>
-      <div class="encounter">
-        <h3>A ${name.toLowerCase()} is attacking you.</h3>
-        <p>Health: ${e.hp}</p>
-      </div>
-      <div class="actions">
-        <button data-act="fight" ${state.hasSpear ? '' : 'disabled'}>Fight with spear<span class="cost">${state.hasSpear ? 'deal damage — risky' : 'need spear'}</span></button>
-        <button data-act="flee">Flee<span class="cost">lose 12–20 HP</span></button>
+    const maxHp = e.type === 'wolf' ? 30 : 45;
+    const pct = Math.max(0, (e.hp / maxHp) * 100);
+    overlayEl.classList.add('danger');
+    overlayBox.innerHTML = `
+      <h2>${emoji} ${name} attacks!</h2>
+      <p>The ${name.toLowerCase()} lunges at you.</p>
+      <div class="enemy-hpbar"><div style="width:${pct}%"></div></div>
+      <p style="font-size:0.82rem;margin-bottom:4px">Enemy HP: <b style="color:#ffd166">${Math.max(0, e.hp)}</b></p>
+      <div class="menu-list">
+        <div class="row ${state.hasSpear ? '' : 'off'}">
+          <span class="key">F</span>
+          <span class="name"><b>Fight with spear</b>
+            <span class="sub">${state.hasSpear ? 'deal 12–23 damage, enemy counterattacks' : 'need a spear to fight'}</span>
+          </span>
+        </div>
+        <div class="row">
+          <span class="key">R</span>
+          <span class="name"><b>Run</b>
+            <span class="sub">lose 12–20 HP, scramble back to the village</span>
+          </span>
+        </div>
       </div>
     `;
-    s.querySelector('[data-act="fight"]').onclick = () => {
-      if (!state.hasSpear) return;
-      const dmg = 12 + Math.floor(Math.random() * 12); // 12–23
-      e.hp -= dmg;
-      log('You stab — ' + dmg + ' damage to the ' + name.toLowerCase() + '.', 'good');
-      if (e.hp <= 0) {
-        log('You defeated the ' + name.toLowerCase() + '!', 'good');
-        if (e.type === 'wolf') {
-          state.pelts += 1;
-          log('Collected a wolf pelt.', 'gold');
-        } else {
-          state.fish += 3;
-          log('You salvaged 3 fish from the gator.', 'gold');
-        }
-        state.encounter = null;
-        render();
-        return;
-      }
-      // counterattack
-      const back = 8 + Math.floor(Math.random() * 10); // 8–17
-      state.hp -= back;
-      log('The ' + name.toLowerCase() + ' bites — you lose ' + back + ' HP.', 'bad');
-      checkDeath();
-      render();
-    };
-    s.querySelector('[data-act="flee"]').onclick = () => {
-      const dmg = 12 + Math.floor(Math.random() * 9);
-      state.hp -= dmg;
-      log('You flee — lose ' + dmg + ' HP, dropped back to the map.', 'bad');
-      state.encounter = null;
-      state.location = 'map';
-      checkDeath();
-      render();
-    };
   }
 
-  // ---------- win/lose ----------
+  function renderEnd(bad, title, msg) {
+    overlayEl.classList.toggle('bad', bad);
+    overlayBox.innerHTML = `
+      <h2>${title}</h2>
+      <p>${msg}</p>
+      <div class="footer-tip">Press <kbd>Enter</kbd> to play again</div>
+    `;
+  }
+
+  // ==== MENU ACTIONS ====
+  function pickCraft(key) {
+    const r = CRAFTS.find(c => c.key === key);
+    if (!r) return;
+    if (r.flag && state[r.flag]) return;
+    if (!canAfford(r.need)) { log('Not enough materials for ' + r.name + '.', 'bad'); return; }
+    pay(r.need);
+    if (r.flag) state[r.flag] = true;
+    if (r.gives) Object.keys(r.gives).forEach(k => state[k] += r.gives[k]);
+    log('Crafted ' + r.name + '.', 'good');
+    renderStatus();
+    renderInventory();
+    renderCraftMenu();
+    save();
+  }
+
+  function pickSell(idx) {
+    if (idx === 0) { sellAll(); return; }
+    const k = SELL_ORDER[idx - 1];
+    if (!k) return;
+    if ((state[k] || 0) <= 0) return;
+    state[k] -= 1;
+    state.gold += SELL[k].price;
+    log('Sold 1 ' + SELL[k].name.toLowerCase() + ' for ' + SELL[k].price + 'g.', 'gold');
+    renderStatus();
+    renderInventory();
+    renderSellMenu();
+    save();
+    checkWin();
+  }
+
+  function sellAll() {
+    let total = 0;
+    SELL_ORDER.forEach(k => {
+      if ((state[k] || 0) > 0) {
+        total += SELL[k].price * state[k];
+        state[k] = 0;
+      }
+    });
+    if (total === 0) { log('Nothing to sell.'); return; }
+    state.gold += total;
+    log('Sold everything for ' + total + 'g.', 'gold');
+    renderStatus();
+    renderInventory();
+    renderSellMenu();
+    save();
+    checkWin();
+  }
+
+  function combatFight() {
+    if (!state.hasSpear) { log('You need a spear to fight.', 'bad'); return; }
+    const e = combatEnemy;
+    const dmg = 12 + Math.floor(Math.random() * 12);
+    e.hp -= dmg;
+    const name = e.type === 'wolf' ? 'wolf' : 'alligator';
+    log('You stab — ' + dmg + ' damage to the ' + name + '.', 'good');
+    if (e.hp <= 0) {
+      log('You defeated the ' + name + '!', 'good');
+      if (e.type === 'wolf') { state.pelts += 1; log('Collected a wolf pelt.', 'gold'); }
+      else                   { state.fish  += 3; log('You salvaged 3 fish from the gator.', 'gold'); }
+      enemies = enemies.filter(x => x !== e);
+      combatEnemy = null;
+      overlayType = null;
+      overlayEl.style.display = 'none';
+      renderAll();
+      save();
+      return;
+    }
+    const back = 8 + Math.floor(Math.random() * 10);
+    state.hp -= back;
+    log('The ' + name + ' bites — you lose ' + back + ' HP.', 'bad');
+    if (checkDeath()) return;
+    renderCombat();
+    renderStatus();
+  }
+
+  function combatRun() {
+    const dmg = 12 + Math.floor(Math.random() * 9);
+    state.hp -= dmg;
+    log('You flee — lose ' + dmg + ' HP.', 'bad');
+    state.px = 7; state.py = 5;
+    combatEnemy = null;
+    overlayType = null;
+    overlayEl.style.display = 'none';
+    if (checkDeath()) return;
+    renderAll();
+  }
+
+  // ==== WIN / DEATH ====
   function checkWin() {
-    if (state.gold >= 500 && !state.over) {
+    if (state.gold >= GOAL_GOLD && !state.over) {
       state.over = true;
-      showOverlay(false, '🏆 You Win!', 'You earned 500 gold from the wilderness. Time to retire in style.');
+      overlayType = 'win';
+      try { localStorage.removeItem(SAVE_KEY); } catch(e){}
+      showOverlay();
     }
   }
   function checkDeath() {
     if (state.hp <= 0 && !state.over) {
       state.hp = 0;
       state.over = true;
-      showOverlay(true, '💀 You Died', 'The wilderness got the better of you. Better luck next run.');
+      overlayType = 'die';
+      try { localStorage.removeItem(SAVE_KEY); } catch(e){}
+      showOverlay();
+      return true;
+    }
+    return false;
+  }
+
+  // ==== ENEMY AI ====
+  function tickEnemies() {
+    const now = performance.now();
+    if (now - lastEnemyMove < ENEMY_MOVE_MS) return;
+    lastEnemyMove = now;
+    if (overlayType) return;
+
+    for (const e of enemies) {
+      if (e.hp <= 0) continue;
+      const dist = Math.abs(e.x - state.px) + Math.abs(e.y - state.py);
+      let dx = 0, dy = 0;
+      if (dist <= 5 && dist > 0) {
+        const xDiff = state.px - e.x, yDiff = state.py - e.y;
+        if (Math.abs(xDiff) >= Math.abs(yDiff)) dx = Math.sign(xDiff);
+        else                                    dy = Math.sign(yDiff);
+      } else {
+        const r = Math.floor(Math.random() * 5);
+        if      (r === 0) dx =  1;
+        else if (r === 1) dx = -1;
+        else if (r === 2) dy =  1;
+        else if (r === 3) dy = -1;
+      }
+      const nx = e.x + dx, ny = e.y + dy;
+      if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) continue;
+      if (!TILES[map[ny][nx]].walk) continue;
+      if (enemies.some(o => o !== e && o.x === nx && o.y === ny && o.hp > 0)) continue;
+      if (state.px === nx && state.py === ny) {
+        e.x = nx; e.y = ny;
+        startCombat(e);
+        return;
+      }
+      e.x = nx; e.y = ny;
     }
   }
 
-  function showOverlay(bad, title, msg) {
-    const o = document.createElement('div');
-    o.className = 'overlay' + (bad ? ' bad' : '');
-    o.innerHTML = `<div class="box"><h2>${title}</h2><p>${msg}</p><button>Play again</button></div>`;
-    o.querySelector('button').onclick = () => location.reload();
-    document.body.appendChild(o);
+  function tickEnemyRespawn() {
+    const now = performance.now();
+    if (now - lastEnemyRespawn < ENEMY_RESPAWN_MS) return;
+    const wolves = enemies.filter(e => e.hp > 0 && e.type === 'wolf').length;
+    const gators = enemies.filter(e => e.hp > 0 && e.type === 'gator').length;
+    let spawned = false;
+    if (wolves < 2) {
+      const p = findSpawn(18, 12, COLS - 1, ROWS - 1);
+      if (p) { enemies.push({ x: p.x, y: p.y, type: 'wolf', hp: 30 }); spawned = true; }
+    }
+    if (gators < 1) {
+      const p = findSpawn(18, 1, COLS - 1, 9);
+      if (p) { enemies.push({ x: p.x, y: p.y, type: 'gator', hp: 45 }); spawned = true; }
+    }
+    if (spawned) lastEnemyRespawn = now;
   }
 
-  // ---------- boot ----------
+  // ==== INPUT ====
+  function handleMoveKeys() {
+    if (overlayType) return;
+    if      (keys['arrowleft']  || keys['a']) tryMove(-1, 0);
+    else if (keys['arrowright'] || keys['d']) tryMove( 1, 0);
+    else if (keys['arrowup']    || keys['w']) tryMove( 0,-1);
+    else if (keys['arrowdown']  || keys['s']) tryMove( 0, 1);
+  }
+
+  window.addEventListener('keydown', (ev) => {
+    const k = ev.key.toLowerCase();
+    if (['arrowleft','arrowright','arrowup','arrowdown','w','a','s','d',' '].includes(k)) {
+      ev.preventDefault();
+    }
+    if (['arrowleft','arrowright','arrowup','arrowdown','w','a','s','d'].includes(k)) {
+      if (!keys[k]) {
+        // Instant move on first press so quick taps register even if the loop hasn't ticked yet
+        if      (k === 'arrowleft'  || k === 'a') tryMove(-1, 0);
+        else if (k === 'arrowright' || k === 'd') tryMove( 1, 0);
+        else if (k === 'arrowup'    || k === 'w') tryMove( 0,-1);
+        else if (k === 'arrowdown'  || k === 's') tryMove( 0, 1);
+      }
+      keys[k] = true;
+      return;
+    }
+    if (overlayType === 'craft') {
+      if (k === 'escape') return closeOverlay();
+      if ('1234567'.includes(k)) pickCraft(k);
+      return;
+    }
+    if (overlayType === 'sell') {
+      if (k === 'escape') return closeOverlay();
+      if ('0123456789'.includes(k)) pickSell(parseInt(k, 10));
+      return;
+    }
+    if (overlayType === 'combat') {
+      if      (k === 'f') combatFight();
+      else if (k === 'r') combatRun();
+      return;
+    }
+    if (overlayType === 'win' || overlayType === 'die') {
+      if (k === 'enter' || k === ' ') location.reload();
+      return;
+    }
+    if (k === ' ' || k === 'enter') return interact();
+    if (k === 'e') return eat();
+    if (k === 'r') return rest();
+  });
+
+  window.addEventListener('keyup', (ev) => {
+    const k = ev.key.toLowerCase();
+    if (keys[k] !== undefined) keys[k] = false;
+  });
+
+  window.addEventListener('blur', () => { keys = {}; });
+  window.addEventListener('beforeunload', save);
+
+  // ==== GAME LOOP ====
+  function loop(now) {
+    handleMoveKeys();
+    tickEnemies();
+    tickEnemyRespawn();
+    drawWorld();
+    if (now - lastSave > 1500) { save(); lastSave = now; }
+    requestAnimationFrame(loop);
+  }
+
+  // ==== BOOT ====
   document.getElementById('reset-btn').onclick = () => {
     if (!confirm('Start over from scratch? Your saved progress will be erased.')) return;
-    wipe();
+    try { localStorage.removeItem(SAVE_KEY); } catch(e){}
     location.reload();
   };
 
+  buildMap();
   if (load()) {
     log('Welcome back — progress restored.');
   } else {
-    log('You wake up at the edge of the wilderness with nothing but your wits.');
-    log('Tip: gather wood and stone, craft an axe, then make furniture to sell.');
+    log('You wake up in a small village with nothing but your wits.');
+    log('Tip: walk next to the 🔨 blacksmith or 💰 merchant and press Space. Gather 🌲 🪨 🫐 in the wild.');
   }
-  render();
+  spawnInitialEnemies();
+  renderAll();
+  canvas.focus();
+  requestAnimationFrame(loop);
 </script>
 
 </body>
